@@ -7,14 +7,8 @@
       <div class="tool-card" @click="navigateToMarkdown">
         <div class="tool-icon">📝</div>
         <h2>Markdown 编辑器</h2>
-        <p>一个功能强大的 Markdown 编辑器，支持实时预览</p>
+        <p>支持实时预览、代码高亮、文件管理</p>
       </div>
-      <div class="tool-card" @click="navigateToTranslator">
-        <div class="tool-icon">🌐</div>
-        <h2>翻译工具</h2>
-        <p>支持多语言互译，支持自动检测源语言</p>
-      </div>
-      <!-- 可以在这里添加更多工具卡片 -->
     </div>
   </div>
 </template>
@@ -26,10 +20,6 @@ const router = useRouter()
 
 const navigateToMarkdown = () => {
   router.push('/markdown')
-}
-
-const navigateToTranslator = () => {
-  router.push('/translator')
 }
 </script>
 
