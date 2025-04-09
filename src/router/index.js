@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import MarkdownEditor from '../views/MarkdownEditor.vue'
+import ImageConverter from '../views/ImageConverter.vue'
 
 const routes = [
   {
@@ -12,6 +13,11 @@ const routes = [
     path: '/markdown',
     name: 'MarkdownEditor',
     component: MarkdownEditor
+  },
+  {
+    path: '/image-converter',
+    name: 'ImageConverter',
+    component: ImageConverter
   }
 ]
 

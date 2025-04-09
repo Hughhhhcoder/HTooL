@@ -9,6 +9,11 @@
         <h2>Markdown 编辑器</h2>
         <p>支持实时预览、代码高亮、文件管理</p>
       </div>
+      <div class="tool-card" @click="navigateToImageConverter">
+        <div class="tool-icon">🖼️</div>
+        <div class="tool-title">图片转换</div>
+        <div class="tool-description">支持多种图片格式转换，支持调整大小和质量</div>
+      </div>
     </div>
   </div>
 </template>
@@ -20,6 +25,10 @@ const router = useRouter()
 
 const navigateToMarkdown = () => {
   router.push('/markdown')
+}
+
+const navigateToImageConverter = () => {
+  router.push('/image-converter')
 }
 </script>
 
