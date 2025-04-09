@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "@google-cloud/translate": "^9.0.1",
+    "dompurify": "^3.2.5",
+    "github-markdown-css": "^5.8.1",
     "highlight.js": "^11.8.0",
     "lodash-es": "^4.17.21",
     "marked": "^9.1.5",

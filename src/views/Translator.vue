@@ -1,6 +1,9 @@
 <template>
   <div class="translator-container">
     <div class="translator-header">
+      <button class="back-btn" @click="goBack">
+        <i class="fas fa-arrow-left"></i> 返回
+      </button>
       <h2>翻译工具</h2>
       <div class="language-selectors">
         <select v-model="sourceLanguage" class="language-select">
@@ -131,8 +134,11 @@
 
 <script setup>
 import { ref, watch, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { debounce } from 'lodash-es'
 import md5 from 'md5'
+
+const router = useRouter()
 
 const inputText = ref('')
 const translatedText = ref('')
@@ -407,6 +413,10 @@ watch([sourceLanguage, targetLanguage], () => {
     translateText()
   }
 })
+
+const goBack = () => {
+  router.push('/')
+}
 </script>
 
 <style scoped>
@@ -417,10 +427,26 @@ watch([sourceLanguage, targetLanguage], () => {
 }
 
 .translator-header {
-  margin-bottom: 20px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.back-btn {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.back-btn:hover {
+  background-color: #f8f9fa;
 }
 
 .language-selectors {
