@@ -11,8 +11,28 @@
       </div>
       <div class="tool-card" @click="navigateToImageConverter">
         <div class="tool-icon">🖼️</div>
-        <div class="tool-title">图片转换</div>
-        <div class="tool-description">支持多种图片格式转换，支持调整大小和质量</div>
+        <h2>图片转换</h2>
+        <p>支持多种图片格式转换，支持调整大小和质量</p>
+      </div>
+      <div class="tool-card" @click="navigateToQRCodeTool">
+        <div class="tool-icon">🔍</div>
+        <h2>二维码生成 / 解析</h2>
+        <p>支持二维码的生成和解析</p>
+      </div>
+      <div class="tool-card" @click="navigateToMarkdownHtmlConverter">
+        <div class="tool-icon">🔄</div>
+        <h2>Markdown ↔ HTML 互转(待完善)</h2>
+        <p>支持 Markdown 和 HTML 之间的相互转换</p>
+      </div>
+      <div class="tool-card" @click="navigateToDrawingBoard">
+        <div class="tool-icon">🖌️</div>
+        <h2>手绘板</h2>
+        <p>支持绘图和保存功能</p>
+      </div>
+      <div class="tool-card" @click="navigateToPomodoroTimer">
+        <div class="tool-icon">⏲️</div>
+        <h2>番茄钟</h2>
+        <p>支持倒计时功能</p>
       </div>
     </div>
   </div>
@@ -30,6 +50,26 @@ const navigateToMarkdown = () => {
 const navigateToImageConverter = () => {
   router.push('/image-converter')
 }
+
+const navigateToJsonTableConverter = () => {
+  router.push('/json-table-converter')
+}
+
+const navigateToQRCodeTool = () => {
+  router.push('/qr-code-tool')
+}
+
+const navigateToMarkdownHtmlConverter = () => {
+  router.push('/markdown-html-converter')
+}
+
+const navigateToDrawingBoard = () => {
+  router.push('/drawing-board')
+}
+
+const navigateToPomodoroTimer = () => {
+  router.push('/pomodoro-timer')
+}
 </script>
 
 <style scoped>
@@ -45,8 +85,8 @@ const navigateToImageConverter = () => {
 }
 
 .header h1 {
-  font-size: 2.5rem;
-  color: #333;
+  font-size: 3rem;
+  color: var(--text-color);
 }
 
 .tools-grid {
@@ -56,7 +96,8 @@ const navigateToImageConverter = () => {
 }
 
 .tool-card {
-  background: white;
+  background: var(--primary-color);
+  color: var(--button-text-color);
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -76,12 +117,32 @@ const navigateToImageConverter = () => {
 
 .tool-card h2 {
   margin: 0 0 10px 0;
-  color: #333;
+  color: var(--button-text-color);
 }
 
 .tool-card p {
   margin: 0;
-  color: #666;
+  color: var(--text-color);
   font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 2.5rem;
+  }
+
+  .tool-icon {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .tool-icon {
+    font-size: 1.5rem;
+  }
 }
 </style> 

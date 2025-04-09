@@ -12,9 +12,11 @@
     "dompurify": "^3.2.5",
     "github-markdown-css": "^5.8.1",
     "highlight.js": "^11.8.0",
+    "jsqr": "^1.4.0",
     "lodash-es": "^4.17.21",
-    "marked": "^9.1.5",
+    "marked": "^9.1.6",
     "md5": "^2.3.0",
+    "qrcode": "^1.5.4",
     "vue": "^3.3.4",
     "vue-router": "^4.5.0"
   },
