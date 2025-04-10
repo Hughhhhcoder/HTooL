@@ -129,7 +129,13 @@ const generateQRCode = async () => {
         content = urlInput.value;
         break;
       case 'image':
-        content = imagePreview.value;
+        if (!imagePreview.value) {
+          alert('请先上传图片');
+          return;
+        }
+        // 对于图片，生成一个临时的文件URL
+        const blob = await fetch(imagePreview.value).then(r => r.blob());
+        content = URL.createObjectURL(blob);
         break;
     }
 
@@ -144,7 +150,8 @@ const generateQRCode = async () => {
       color: {
         dark: darkColor.value,
         light: lightColor.value
-      }
+      },
+      errorCorrectionLevel: 'H' // 使用最高级别的错误纠正
     };
 
     qrCodeDataUrl.value = await QRCode.toDataURL(content, options);
@@ -157,6 +164,12 @@ const generateQRCode = async () => {
 const handleImageUpload = (event) => {
   const file = event.target.files[0];
   if (file) {
+    // 检查文件大小
+    if (file.size > 5 * 1024 * 1024) { // 5MB
+      alert('图片大小不能超过5MB');
+      return;
+    }
+    
     const reader = new FileReader();
     reader.onload = (e) => {
       imagePreview.value = e.target.result;

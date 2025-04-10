@@ -8,6 +8,7 @@ import MarkdownHtmlConverter from '../views/MarkdownHtmlConverter.vue'
 import DrawingBoard from '../views/DrawingBoard.vue'
 import PomodoroTimer from '../views/PomodoroTimer.vue'
 import DataProcessor from '../views/DataProcessor.vue'
+import MathTool from '../views/MathTool.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -51,6 +52,11 @@ const router = createRouter({
       path: '/data-processor',
       name: 'data-processor',
       component: DataProcessor
+    },
+    {
+      path: '/math-tool',
+      name: 'math-tool',
+      component: MathTool
     }
   ]
 })

@@ -39,6 +39,11 @@
         <h2>数据处理工具</h2>
         <p>支持正则表达式测试、URL编码/解码、Base64编码/解码、哈希计算</p>
       </div>
+      <div class="tool-card" @click="navigateToMathTool">
+        <div class="tool-icon">🔢</div>
+        <h2>数学小工具</h2>
+        <p>支持单位换算、数学公式渲染、统计计算、矩阵计算</p>
+      </div>
     </div>
   </div>
 </template>
@@ -83,6 +88,14 @@ const navigateToPomodoroTimer = () => {
 
 const navigateToDataProcessor = () => {
   router.push('/data-processor')
+}
+
+const navigateToMathTool = () => {
+  router.push('/math-tool')
+}
+
+const navigateToImageToExcel = () => {
+  router.push('/image-to-excel')
 }
 </script>
 
