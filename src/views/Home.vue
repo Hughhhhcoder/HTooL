@@ -44,6 +44,11 @@
         <h2>数学小工具</h2>
         <p>支持单位换算、数学公式渲染、统计计算、矩阵计算</p>
       </div>
+      <div class="tool-card" @click="navigateToIPLocation">
+        <div class="tool-icon">📍</div>
+        <h2>IP地址定位</h2>
+        <p>查询IP地址的地理位置信息</p>
+      </div>
     </div>
   </div>
 </template>
@@ -71,7 +76,7 @@ const navigateToJsonTableConverter = () => {
 }
 
 const navigateToQRCodeTool = () => {
-  router.push('/qr-code-tool')
+  router.push('/qrcode')
 }
 
 const navigateToMarkdownHtmlConverter = () => {
@@ -91,11 +96,11 @@ const navigateToDataProcessor = () => {
 }
 
 const navigateToMathTool = () => {
-  router.push('/math-tool')
+  router.push('/math')
 }
 
-const navigateToImageToExcel = () => {
-  router.push('/image-to-excel')
+const navigateToIPLocation = () => {
+  router.push('/ip-location')
 }
 </script>
 
