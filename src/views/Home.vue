@@ -1,53 +1,17 @@
 <template>
   <div class="home">
-    <header class="header">
-      <h1>HTooL</h1>
-    </header>
     <div class="tools-grid">
-      <div class="tool-card" @click="navigateToMarkdown">
-        <div class="tool-icon">📝</div>
-        <h2>Markdown 编辑器</h2>
-        <p>支持实时预览、代码高亮、文件管理</p>
-      </div>
-      <div class="tool-card" @click="navigateToImageConverter">
-        <div class="tool-icon">🖼️</div>
-        <h2>图片转换</h2>
-        <p>支持多种图片格式转换，支持调整大小和质量</p>
-      </div>
-      <div class="tool-card" @click="navigateToQRCodeTool">
-        <div class="tool-icon">🔍</div>
-        <h2>二维码生成 / 解析</h2>
-        <p>支持二维码的生成和解析，包括图片、链接等多种格式</p>
-      </div>
-      <div class="tool-card" @click="navigateToMarkdownHtmlConverter">
-        <div class="tool-icon">🔄</div>
-        <h2>Markdown ↔ HTML 互转(待完善)</h2>
-        <p>支持 Markdown 和 HTML 之间的相互转换</p>
-      </div>
-      <div class="tool-card" @click="navigateToDrawingBoard">
-        <div class="tool-icon">🖌️</div>
-        <h2>手绘板</h2>
-        <p>支持绘图和保存功能</p>
-      </div>
-      <div class="tool-card" @click="navigateToPomodoroTimer">
-        <div class="tool-icon">⏲️</div>
-        <h2>番茄钟</h2>
-        <p>支持倒计时功能</p>
-      </div>
-      <div class="tool-card" @click="navigateToDataProcessor">
-        <div class="tool-icon">🔧</div>
-        <h2>数据处理工具</h2>
-        <p>支持正则表达式测试、URL编码/解码、Base64编码/解码、哈希计算</p>
-      </div>
-      <div class="tool-card" @click="navigateToMathTool">
-        <div class="tool-icon">🔢</div>
-        <h2>数学小工具</h2>
-        <p>支持单位换算、数学公式渲染、统计计算、矩阵计算</p>
-      </div>
-      <div class="tool-card" @click="navigateToIPLocation">
-        <div class="tool-icon">📍</div>
-        <h2>IP地址定位</h2>
-        <p>查询IP地址的地理位置信息</p>
+      <div 
+        v-for="tool in tools" 
+        :key="tool.id"
+        class="tool-card"
+        @click="tool.action"
+      >
+        <div class="tool-icon">
+          <i :class="tool.icon"></i>
+        </div>
+        <h3>{{ tool.name }}</h3>
+        <p>{{ tool.description }}</p>
       </div>
     </div>
   </div>
@@ -55,141 +19,200 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-import { ref } from 'vue'
 
 const router = useRouter()
 
-const toggleTheme = () => {
-  console.log('Theme toggled')
-}
-
-const navigateToMarkdown = () => {
-  router.push('/markdown')
-}
-
-const navigateToImageConverter = () => {
-  router.push('/image-converter')
-}
-
-const navigateToQRCodeTool = () => {
-  router.push('/qrcode')
-}
-
-const navigateToMarkdownHtmlConverter = () => {
-  router.push('/markdown-html')
-}
-
-const navigateToDrawingBoard = () => {
-  router.push('/drawing-board')
-}
-
-const navigateToPomodoroTimer = () => {
-  router.push('/pomodoro')
-}
-
-const navigateToDataProcessor = () => {
-  router.push('/data-processor')
-}
-
-const navigateToMathTool = () => {
-  router.push('/math')
-}
-
-const navigateToIPLocation = () => {
-  router.push('/ip-location')
-}
+const tools = [
+  {
+    id: 1,
+    name: 'Markdown 编辑器',
+    description: '强大的 Markdown 编辑器，支持实时预览',
+    icon: 'fas fa-file-alt',
+    action: () => router.push('/markdown')
+  },
+  {
+    id: 2,
+    name: '图片转换',
+    description: '支持多种图片格式转换',
+    icon: 'fas fa-image',
+    action: () => router.push('/image-converter')
+  },
+  {
+    id: 3,
+    name: '二维码工具',
+    description: '生成和解析二维码',
+    icon: 'fas fa-qrcode',
+    action: () => router.push('/qrcode')
+  },
+  {
+    id: 4,
+    name: 'Markdown ↔ HTML 转换',
+    description: 'Markdown 和 HTML 互转',
+    icon: 'fas fa-exchange-alt',
+    action: () => router.push('/markdown-html')
+  },
+  {
+    id: 5,
+    name: '手绘板',
+    description: '在线绘图工具',
+    icon: 'fas fa-paint-brush',
+    action: () => router.push('/drawing-board')
+  },
+  {
+    id: 6,
+    name: '番茄钟',
+    description: '提高工作效率的计时器',
+    icon: 'fas fa-clock',
+    action: () => router.push('/pomodoro')
+  },
+  {
+    id: 7,
+    name: '数据处理工具',
+    description: '数据格式转换和处理',
+    icon: 'fas fa-database',
+    action: () => router.push('/data-processor')
+  },
+  {
+    id: 8,
+    name: '数学工具',
+    description: '数学计算和公式编辑',
+    icon: 'fas fa-calculator',
+    action: () => router.push('/math')
+  },
+  {
+    id: 9,
+    name: 'IP 地址定位',
+    description: '查询 IP 地址地理位置',
+    icon: 'fas fa-map-marker-alt',
+    action: () => router.push('/ip-location')
+  }
+]
 </script>
 
 <style scoped>
 .home {
   padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.header {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.header h1 {
-  font-size: 3rem;
-  color: var(--text-color);
-}
-
-.header button {
-  margin-top: 10px;
-  padding: 10px 20px;
-  background-color: var(--primary-color);
-  color: var(--button-text-color);
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.header button:hover {
-  background-color: var(--primary-color-hover);
 }
 
 .tools-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .tool-card {
-  background: var(--primary-color);
-  color: var(--button-text-color);
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 24px;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.tool-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--primary-color);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
 }
 
 .tool-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.tool-card:hover::before {
+  transform: scaleX(1);
 }
 
 .tool-icon {
   font-size: 2.5rem;
-  margin-bottom: 15px;
+  color: var(--primary-color);
+  margin-bottom: 16px;
+  transition: transform 0.3s ease;
 }
 
-.tool-card h2 {
-  margin: 0 0 10px 0;
-  color: var(--button-text-color);
+.tool-card:hover .tool-icon {
+  transform: scale(1.1);
+}
+
+.tool-card h3 {
+  font-size: 1.25rem;
+  margin-bottom: 8px;
+  color: var(--text-color);
+  transition: color 0.3s ease;
+}
+
+.tool-card:hover h3 {
+  color: var(--primary-color);
 }
 
 .tool-card p {
-  margin: 0;
-  color: var(--text-color);
+  color: #666;
   font-size: 0.9rem;
+  line-height: 1.5;
+  transition: color 0.3s ease;
 }
 
+.tool-card:hover p {
+  color: #888;
+}
+
+/* 暗色模式支持 */
+.dark-theme .tool-card {
+  background: #333;
+  border-color: #444;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.dark-theme .tool-card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.dark-theme .tool-card p {
+  color: #aaa;
+}
+
+.dark-theme .tool-card:hover p {
+  color: #ccc;
+}
+
+/* 移动端适配 */
 @media (max-width: 768px) {
-  .header h1 {
-    font-size: 2.5rem;
+  .home {
+    padding: 15px;
+  }
+
+  .tools-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .tool-card {
+    padding: 20px;
   }
 
   .tool-icon {
     font-size: 2rem;
   }
-}
 
-@media (max-width: 480px) {
-  .header h1 {
-    font-size: 2rem;
+  .tool-card:hover {
+    transform: translateY(-3px);
   }
-
-  .tool-icon {
-    font-size: 1.5rem;
-  }
-}
-
-textarea {
-  resize: vertical;
 }
 </style> 

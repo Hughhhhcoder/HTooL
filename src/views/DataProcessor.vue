@@ -134,4 +134,304 @@ button {
 button:hover {
   background: #0056b3;
 }
+
+/* 暗色模式支持 */
+.dark-theme .data-container {
+  background: #2d2d2d;
+  border-color: #444;
+}
+
+.dark-theme .input-section,
+.dark-theme .output-section {
+  background: #333;
+  border-color: #444;
+}
+
+.dark-theme .input-section h3,
+.dark-theme .output-section h3 {
+  color: #fff;
+  border-color: #444;
+}
+
+.dark-theme .input-section textarea {
+  background: #2d2d2d;
+  border-color: #444;
+  color: #ddd;
+}
+
+.dark-theme .input-section textarea::placeholder {
+  color: #666;
+}
+
+.dark-theme .input-section textarea:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.dark-theme .action-buttons button {
+  background: #3a3a3a;
+  border-color: #444;
+  color: #ddd;
+}
+
+.dark-theme .action-buttons button:hover {
+  background: #444;
+  color: #fff;
+}
+
+.dark-theme .action-buttons button:active {
+  background: #333;
+}
+
+.dark-theme .result-display {
+  background: #333;
+  border-color: #444;
+}
+
+.dark-theme .result-display .placeholder {
+  color: #666;
+}
+
+.dark-theme .result-display .placeholder i {
+  color: #444;
+}
+
+.dark-theme .result-display .data-output {
+  color: #ddd;
+}
+
+.dark-theme .result-display .data-output pre {
+  background: #2d2d2d;
+  border-color: #444;
+  color: #ddd;
+}
+
+.dark-theme .result-display .data-output code {
+  background: #3a3a3a;
+  color: #fff;
+}
+
+.dark-theme .mobile-nav {
+  background: #333;
+  border-color: #444;
+}
+
+.dark-theme .mobile-nav button {
+  color: #ddd;
+}
+
+.dark-theme .mobile-nav button:hover {
+  color: #fff;
+}
+
+/* 暗色模式下的错误提示样式 */
+.dark-theme .error-message {
+  background: #3a3a3a;
+  border-color: #dc3545;
+  color: #ff6b6b;
+}
+
+/* 暗色模式下的成功提示样式 */
+.dark-theme .success-message {
+  background: #3a3a3a;
+  border-color: #28a745;
+  color: #6cff6c;
+}
+
+/* 暗色模式下的加载动画样式 */
+.dark-theme .loading-spinner {
+  border-color: #444;
+  border-top-color: var(--primary-color);
+}
+
+/* 暗色模式下的工具提示样式 */
+.dark-theme .tooltip {
+  background: #333;
+  color: #ddd;
+  border-color: #444;
+}
+
+.dark-theme .tooltip::before {
+  border-color: #444 transparent transparent transparent;
+}
+
+/* 暗色模式下的模态框样式 */
+.dark-theme .modal {
+  background: #333;
+  border-color: #444;
+}
+
+.dark-theme .modal-header {
+  border-color: #444;
+}
+
+.dark-theme .modal-title {
+  color: #fff;
+}
+
+.dark-theme .modal-body {
+  color: #ddd;
+}
+
+.dark-theme .modal-footer {
+  border-color: #444;
+}
+
+/* 暗色模式下的标签页样式 */
+.dark-theme .tabs {
+  border-color: #444;
+}
+
+.dark-theme .tab {
+  color: #ddd;
+  border-color: #444;
+}
+
+.dark-theme .tab.active {
+  background: #3a3a3a;
+  color: #fff;
+  border-color: var(--primary-color);
+}
+
+.dark-theme .tab:hover {
+  background: #444;
+}
+
+/* 暗色模式下的文件上传区域样式 */
+.dark-theme .file-upload {
+  background: #333;
+  border-color: #444;
+}
+
+.dark-theme .file-upload:hover {
+  background: #3a3a3a;
+}
+
+.dark-theme .file-upload input[type="file"] {
+  color: #ddd;
+}
+
+/* 暗色模式下的数据表格样式 */
+.dark-theme .data-table {
+  background: #333;
+  border-color: #444;
+}
+
+.dark-theme .data-table th {
+  background: #3a3a3a;
+  color: #fff;
+  border-color: #444;
+}
+
+.dark-theme .data-table td {
+  color: #ddd;
+  border-color: #444;
+}
+
+.dark-theme .data-table tr:nth-child(even) {
+  background: #2d2d2d;
+}
+
+.dark-theme .data-table tr:hover {
+  background: #3a3a3a;
+}
+
+/* 暗色模式下的数据可视化样式 */
+.dark-theme .visualization {
+  background: #333;
+  border-color: #444;
+}
+
+.dark-theme .visualization .chart-title {
+  color: #fff;
+}
+
+.dark-theme .visualization .chart-legend {
+  color: #ddd;
+}
+
+.dark-theme .visualization .chart-axis {
+  color: #aaa;
+}
+
+.dark-theme .visualization .chart-grid {
+  stroke: #444;
+}
+
+.dark-theme .visualization .chart-line {
+  stroke: var(--primary-color);
+}
+
+.dark-theme .visualization .chart-area {
+  fill: rgba(0, 123, 255, 0.1);
+}
+
+.dark-theme .visualization .chart-point {
+  fill: var(--primary-color);
+  stroke: #333;
+}
+
+/* 暗色模式下的数据统计样式 */
+.dark-theme .stats-section {
+  background: #333;
+  border-color: #444;
+}
+
+.dark-theme .stats-section h4 {
+  color: #fff;
+  border-color: #444;
+}
+
+.dark-theme .stats-grid {
+  border-color: #444;
+}
+
+.dark-theme .stat-item {
+  border-color: #444;
+  color: #ddd;
+}
+
+.dark-theme .stat-item .stat-label {
+  color: #aaa;
+}
+
+.dark-theme .stat-item .stat-value {
+  color: #fff;
+}
+
+/* 暗色模式下的导出选项样式 */
+.dark-theme .export-options {
+  background: #333;
+  border-color: #444;
+}
+
+.dark-theme .export-options h4 {
+  color: #fff;
+}
+
+.dark-theme .export-options select {
+  background: #2d2d2d;
+  border-color: #444;
+  color: #ddd;
+}
+
+.dark-theme .export-options select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.dark-theme .export-options button {
+  background: #3a3a3a;
+  border-color: #444;
+  color: #ddd;
+}
+
+.dark-theme .export-options button:hover {
+  background: #444;
+  color: #fff;
+}
+
+.dark-theme .export-options button:active {
+  background: #333;
+}
 </style> 

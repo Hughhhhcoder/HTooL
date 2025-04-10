@@ -489,4 +489,204 @@ textarea {
   margin-bottom: 3px;
   line-height: 1.4;
 }
+
+/* 暗色模式支持 */
+.dark-theme .qrcode-container {
+  background: #2d2d2d;
+  border-color: #444;
+}
+
+.dark-theme .input-section,
+.dark-theme .output-section {
+  background: #333;
+  border-color: #444;
+}
+
+.dark-theme .input-section h3,
+.dark-theme .output-section h3 {
+  color: #fff;
+  border-color: #444;
+}
+
+.dark-theme .input-section textarea {
+  background: #2d2d2d;
+  border-color: #444;
+  color: #ddd;
+}
+
+.dark-theme .input-section textarea::placeholder {
+  color: #666;
+}
+
+.dark-theme .input-section textarea:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.dark-theme .action-buttons button {
+  background: #3a3a3a;
+  border-color: #444;
+  color: #ddd;
+}
+
+.dark-theme .action-buttons button:hover {
+  background: #444;
+  color: #fff;
+}
+
+.dark-theme .action-buttons button:active {
+  background: #333;
+}
+
+.dark-theme .qrcode-preview {
+  background: #333;
+  border-color: #444;
+}
+
+.dark-theme .qrcode-preview .placeholder {
+  color: #666;
+}
+
+.dark-theme .qrcode-preview .placeholder i {
+  color: #444;
+}
+
+.dark-theme .qrcode-preview img {
+  border-color: #444;
+}
+
+.dark-theme .download-options {
+  background: #333;
+  border-color: #444;
+}
+
+.dark-theme .download-options h4 {
+  color: #fff;
+}
+
+.dark-theme .download-options select {
+  background: #2d2d2d;
+  border-color: #444;
+  color: #ddd;
+}
+
+.dark-theme .download-options select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.dark-theme .download-options button {
+  background: #3a3a3a;
+  border-color: #444;
+  color: #ddd;
+}
+
+.dark-theme .download-options button:hover {
+  background: #444;
+  color: #fff;
+}
+
+.dark-theme .download-options button:active {
+  background: #333;
+}
+
+.dark-theme .mobile-nav {
+  background: #333;
+  border-color: #444;
+}
+
+.dark-theme .mobile-nav button {
+  color: #ddd;
+}
+
+.dark-theme .mobile-nav button:hover {
+  color: #fff;
+}
+
+/* 暗色模式下的错误提示样式 */
+.dark-theme .error-message {
+  background: #3a3a3a;
+  border-color: #dc3545;
+  color: #ff6b6b;
+}
+
+/* 暗色模式下的成功提示样式 */
+.dark-theme .success-message {
+  background: #3a3a3a;
+  border-color: #28a745;
+  color: #6cff6c;
+}
+
+/* 暗色模式下的加载动画样式 */
+.dark-theme .loading-spinner {
+  border-color: #444;
+  border-top-color: var(--primary-color);
+}
+
+/* 暗色模式下的文件上传区域样式 */
+.dark-theme .file-upload {
+  background: #333;
+  border-color: #444;
+}
+
+.dark-theme .file-upload:hover {
+  background: #3a3a3a;
+}
+
+.dark-theme .file-upload input[type="file"] {
+  color: #ddd;
+}
+
+/* 暗色模式下的工具提示样式 */
+.dark-theme .tooltip {
+  background: #333;
+  color: #ddd;
+  border-color: #444;
+}
+
+.dark-theme .tooltip::before {
+  border-color: #444 transparent transparent transparent;
+}
+
+/* 暗色模式下的模态框样式 */
+.dark-theme .modal {
+  background: #333;
+  border-color: #444;
+}
+
+.dark-theme .modal-header {
+  border-color: #444;
+}
+
+.dark-theme .modal-title {
+  color: #fff;
+}
+
+.dark-theme .modal-body {
+  color: #ddd;
+}
+
+.dark-theme .modal-footer {
+  border-color: #444;
+}
+
+/* 暗色模式下的标签页样式 */
+.dark-theme .tabs {
+  border-color: #444;
+}
+
+.dark-theme .tab {
+  color: #ddd;
+  border-color: #444;
+}
+
+.dark-theme .tab.active {
+  background: #3a3a3a;
+  color: #fff;
+  border-color: var(--primary-color);
+}
+
+.dark-theme .tab:hover {
+  background: #444;
+}
 </style> 

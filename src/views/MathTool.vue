@@ -154,4 +154,339 @@ button:hover {
   border-radius: 4px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
+
+/* 暗色模式支持 */
+.dark-theme .math-container {
+  background: #2d2d2d;
+  border-color: #444;
+}
+
+.dark-theme .input-section,
+.dark-theme .output-section {
+  background: #333;
+  border-color: #444;
+}
+
+.dark-theme .input-section h3,
+.dark-theme .output-section h3 {
+  color: #fff;
+  border-color: #444;
+}
+
+.dark-theme .input-section textarea {
+  background: #2d2d2d;
+  border-color: #444;
+  color: #ddd;
+}
+
+.dark-theme .input-section textarea::placeholder {
+  color: #666;
+}
+
+.dark-theme .input-section textarea:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.dark-theme .action-buttons button {
+  background: #3a3a3a;
+  border-color: #444;
+  color: #ddd;
+}
+
+.dark-theme .action-buttons button:hover {
+  background: #444;
+  color: #fff;
+}
+
+.dark-theme .action-buttons button:active {
+  background: #333;
+}
+
+.dark-theme .result-display {
+  background: #333;
+  border-color: #444;
+}
+
+.dark-theme .result-display .placeholder {
+  color: #666;
+}
+
+.dark-theme .result-display .placeholder i {
+  color: #444;
+}
+
+.dark-theme .result-display .math-output {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .base {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mbin {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mrel {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mopen {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mclose {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mpunct {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mtext {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mspace {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .msupsub {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mfrac {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mroot {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .msqrt {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mstyle {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.text {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.mathit {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.mathnormal {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.boldsymbol {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.bold {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.amsrm {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.amsbb {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.amsfonts {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.amssymb {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.stmaryrd {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.stix {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.stix-general {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.stix-symbols {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.stix-math {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.stix-mathbb {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.stix-mathcal {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.stix-mathfrak {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.stix-mathscr {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.stix-mathsf {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.stix-mathtt {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.stix-mathit {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.stix-mathnormal {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.stix-mathbf {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.stix-mathbbf {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.stix-mathcalbf {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.stix-mathfrakbf {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.stix-mathscrbf {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.stix-mathsfbf {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.stix-mathttbf {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.stix-mathitbf {
+  color: #ddd;
+}
+
+.dark-theme .result-display .math-output .katex .mord.stix-mathnormalbf {
+  color: #ddd;
+}
+
+.dark-theme .mobile-nav {
+  background: #333;
+  border-color: #444;
+}
+
+.dark-theme .mobile-nav button {
+  color: #ddd;
+}
+
+.dark-theme .mobile-nav button:hover {
+  color: #fff;
+}
+
+/* 暗色模式下的错误提示样式 */
+.dark-theme .error-message {
+  background: #3a3a3a;
+  border-color: #dc3545;
+  color: #ff6b6b;
+}
+
+/* 暗色模式下的成功提示样式 */
+.dark-theme .success-message {
+  background: #3a3a3a;
+  border-color: #28a745;
+  color: #6cff6c;
+}
+
+/* 暗色模式下的加载动画样式 */
+.dark-theme .loading-spinner {
+  border-color: #444;
+  border-top-color: var(--primary-color);
+}
+
+/* 暗色模式下的工具提示样式 */
+.dark-theme .tooltip {
+  background: #333;
+  color: #ddd;
+  border-color: #444;
+}
+
+.dark-theme .tooltip::before {
+  border-color: #444 transparent transparent transparent;
+}
+
+/* 暗色模式下的模态框样式 */
+.dark-theme .modal {
+  background: #333;
+  border-color: #444;
+}
+
+.dark-theme .modal-header {
+  border-color: #444;
+}
+
+.dark-theme .modal-title {
+  color: #fff;
+}
+
+.dark-theme .modal-body {
+  color: #ddd;
+}
+
+.dark-theme .modal-footer {
+  border-color: #444;
+}
+
+/* 暗色模式下的标签页样式 */
+.dark-theme .tabs {
+  border-color: #444;
+}
+
+.dark-theme .tab {
+  color: #ddd;
+  border-color: #444;
+}
+
+.dark-theme .tab.active {
+  background: #3a3a3a;
+  color: #fff;
+  border-color: var(--primary-color);
+}
+
+.dark-theme .tab:hover {
+  background: #444;
+}
 </style> 
