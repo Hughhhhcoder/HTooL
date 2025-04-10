@@ -34,14 +34,24 @@
         <h2>番茄钟</h2>
         <p>支持倒计时功能</p>
       </div>
+      <div class="tool-card" @click="navigateToDataProcessor">
+        <div class="tool-icon">🔧</div>
+        <h2>数据处理工具</h2>
+        <p>支持正则表达式测试、URL编码/解码、Base64编码/解码、哈希计算</p>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { useRouter } from 'vue-router'
+import { ref } from 'vue'
 
 const router = useRouter()
+
+const toggleTheme = () => {
+  console.log('Theme toggled')
+}
 
 const navigateToMarkdown = () => {
   router.push('/markdown')
@@ -70,6 +80,10 @@ const navigateToDrawingBoard = () => {
 const navigateToPomodoroTimer = () => {
   router.push('/pomodoro-timer')
 }
+
+const navigateToDataProcessor = () => {
+  router.push('/data-processor')
+}
 </script>
 
 <style scoped>
@@ -87,6 +101,21 @@ const navigateToPomodoroTimer = () => {
 .header h1 {
   font-size: 3rem;
   color: var(--text-color);
+}
+
+.header button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: var(--primary-color);
+  color: var(--button-text-color);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.header button:hover {
+  background-color: var(--primary-color-hover);
 }
 
 .tools-grid {
@@ -144,5 +173,9 @@ const navigateToPomodoroTimer = () => {
   .tool-icon {
     font-size: 1.5rem;
   }
+}
+
+textarea {
+  resize: vertical;
 }
 </style> 

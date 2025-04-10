@@ -7,6 +7,7 @@ import QRCodeTool from '../views/QRCodeTool.vue'
 import MarkdownHtmlConverter from '../views/MarkdownHtmlConverter.vue'
 import DrawingBoard from '../views/DrawingBoard.vue'
 import PomodoroTimer from '../views/PomodoroTimer.vue'
+import DataProcessor from '../views/DataProcessor.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -45,6 +46,11 @@ const router = createRouter({
       path: '/pomodoro-timer',
       name: 'pomodoro-timer',
       component: PomodoroTimer
+    },
+    {
+      path: '/data-processor',
+      name: 'data-processor',
+      component: DataProcessor
     }
   ]
 })
