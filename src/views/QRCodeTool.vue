@@ -31,22 +31,12 @@
         placeholder="输入链接生成二维码"
       />
 
-      <!-- 图片上传 -->
-      <div v-if="currentInputType === 'image'" class="image-upload">
-        <input 
-          type="file" 
-          @change="handleImageUpload" 
-          accept="image/*" 
-          ref="imageInput"
-        />
-        <img v-if="imagePreview" :src="imagePreview" class="preview-image" />
-      </div>
-
       <!-- 样式设置 -->
       <div class="style-settings">
         <div class="setting-item">
-          <label>大小:</label>
-          <input type="number" v-model="qrSize" min="100" max="1000" step="50" />
+          <label>二维码尺寸:</label>
+          <input type="number" v-model="qrSize" min="300" max="800" step="50" />
+          <span>像素</span>
         </div>
         <div class="setting-item">
           <label>前景色:</label>
@@ -58,16 +48,18 @@
         </div>
         <div class="setting-item">
           <label>边距:</label>
-          <input type="number" v-model="margin" min="0" max="50" />
+          <input type="number" v-model="margin" min="0" max="4" step="1" />
         </div>
       </div>
 
       <button @click="generateQRCode" class="primary-button">生成二维码</button>
       
       <!-- 生成结果 -->
-      <div v-if="qrCodeDataUrl" class="qr-result">
-        <img :src="qrCodeDataUrl" alt="生成的二维码" />
-        <button @click="downloadQRCode">下载二维码</button>
+      <div v-if="qrCodeDataUrls.length" class="qr-result">
+        <img :src="qrCodeDataUrls[0]" alt="生成的二维码" />
+        <div class="qr-actions">
+          <button @click="downloadQRCode">下载二维码</button>
+        </div>
       </div>
     </div>
 
@@ -100,21 +92,19 @@ import jsQR from 'jsqr';
 const currentInputType = ref('text');
 const textInput = ref('');
 const urlInput = ref('');
-const imagePreview = ref('');
-const qrCodeDataUrl = ref('');
+const qrCodeDataUrls = ref([]);
 const decodedResult = ref(null);
 
 // 样式设置
-const qrSize = ref(300);
+const qrSize = ref(400);
 const darkColor = ref('#000000');
 const lightColor = ref('#FFFFFF');
-const margin = ref(4);
+const margin = ref(2);
 
 // 输入类型选项
 const inputTypes = [
   { label: '文本', value: 'text' },
-  { label: '链接', value: 'url' },
-  { label: '图片', value: 'image' }
+  { label: '链接', value: 'url' }
 ];
 
 // 生成二维码
@@ -127,15 +117,6 @@ const generateQRCode = async () => {
         break;
       case 'url':
         content = urlInput.value;
-        break;
-      case 'image':
-        if (!imagePreview.value) {
-          alert('请先上传图片');
-          return;
-        }
-        // 对于图片，生成一个临时的文件URL
-        const blob = await fetch(imagePreview.value).then(r => r.blob());
-        content = URL.createObjectURL(blob);
         break;
     }
 
@@ -151,40 +132,27 @@ const generateQRCode = async () => {
         dark: darkColor.value,
         light: lightColor.value
       },
-      errorCorrectionLevel: 'H' // 使用最高级别的错误纠正
+      errorCorrectionLevel: 'H',
+      type: 'image/jpeg',
+      quality: 1.0,
+      scale: 4
     };
 
-    qrCodeDataUrl.value = await QRCode.toDataURL(content, options);
+    // 生成单个二维码
+    qrCodeDataUrls.value = [await QRCode.toDataURL(content, options)];
   } catch (error) {
+    console.error('QR Code Generation Error:', error);
     alert('二维码生成失败: ' + error.message);
-  }
-};
-
-// 处理图片上传
-const handleImageUpload = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    // 检查文件大小
-    if (file.size > 5 * 1024 * 1024) { // 5MB
-      alert('图片大小不能超过5MB');
-      return;
-    }
-    
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      imagePreview.value = e.target.result;
-    };
-    reader.readAsDataURL(file);
   }
 };
 
 // 下载二维码
 const downloadQRCode = () => {
-  if (!qrCodeDataUrl.value) return;
+  if (qrCodeDataUrls.value.length === 0) return;
   
   const link = document.createElement('a');
   link.download = 'qrcode.png';
-  link.href = qrCodeDataUrl.value;
+  link.href = qrCodeDataUrls.value[0];
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
@@ -350,10 +318,11 @@ textarea {
 }
 
 .qr-result img {
-  max-width: 300px;
+  max-width: 400px; /* 增加预览尺寸 */
   margin-bottom: 15px;
   border: 1px solid #e9ecef;
   padding: 5px;
+  background: white; /* 确保背景为白色 */
 }
 
 .qr-result button {
@@ -413,5 +382,111 @@ textarea {
 .preview-image {
   max-width: 200px;
   margin-top: 10px;
+}
+
+.image-url {
+  margin: 10px 0;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 4px;
+  word-break: break-all;
+}
+
+.image-url a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.image-url a:hover {
+  text-decoration: underline;
+}
+
+.qr-navigation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.qr-navigation button {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #f8f9fa;
+  cursor: pointer;
+}
+
+.qr-navigation button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.qr-actions {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.compression-settings {
+  margin: 20px 0;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.compression-settings h4 {
+  margin: 0 0 15px 0;
+  color: #495057;
+}
+
+.setting-item span {
+  margin-left: 10px;
+  color: #666;
+}
+
+.qr-instructions {
+  margin: 15px 0;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.qr-instructions p {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.qr-instructions ol {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.qr-instructions li {
+  margin-bottom: 5px;
+}
+
+.compression-tips {
+  margin-top: 15px;
+  padding: 10px;
+  background: #fff3cd;
+  border-radius: 4px;
+  color: #856404;
+  font-size: 0.9em;
+}
+
+.compression-tips p {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.compression-tips ul {
+  margin: 5px 0;
+  padding-left: 20px;
+}
+
+.compression-tips li {
+  margin-bottom: 3px;
+  line-height: 1.4;
 }
 </style> 
