@@ -71,16 +71,12 @@ const navigateToImageConverter = () => {
   router.push('/image-converter')
 }
 
-const navigateToJsonTableConverter = () => {
-  router.push('/json-table-converter')
-}
-
 const navigateToQRCodeTool = () => {
   router.push('/qrcode')
 }
 
 const navigateToMarkdownHtmlConverter = () => {
-  router.push('/markdown-html-converter')
+  router.push('/markdown-html')
 }
 
 const navigateToDrawingBoard = () => {
@@ -88,7 +84,7 @@ const navigateToDrawingBoard = () => {
 }
 
 const navigateToPomodoroTimer = () => {
-  router.push('/pomodoro-timer')
+  router.push('/pomodoro')
 }
 
 const navigateToDataProcessor = () => {
