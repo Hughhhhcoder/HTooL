@@ -17,7 +17,7 @@
       <div class="tool-card" @click="navigateToQRCodeTool">
         <div class="tool-icon">🔍</div>
         <h2>二维码生成 / 解析</h2>
-        <p>支持二维码的生成和解析</p>
+        <p>支持二维码的生成和解析，包括图片、链接等多种格式</p>
       </div>
       <div class="tool-card" @click="navigateToMarkdownHtmlConverter">
         <div class="tool-icon">🔄</div>
