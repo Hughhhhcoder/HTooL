@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "@google-cloud/translate": "^9.0.1",
+    "@vercel/analytics": "^1.5.0",
+    "@vercel/speed-insights": "^1.2.0",
     "crypto-js": "^4.2.0",
     "dompurify": "^3.2.5",
     "github-markdown-css": "^5.8.1",
