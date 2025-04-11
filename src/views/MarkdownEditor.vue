@@ -1,7 +1,7 @@
 <template>
   <div class="markdown-editor" :data-view="isEditorView ? 'editor' : 'files'">
-    <!-- 移动端顶部导航栏 -->
-    <div class="mobile-nav" v-if="isMobile">
+    <!-- 统一的顶部导航栏 -->
+    <div class="mobile-nav">
       <button class="menu-button" @click="toggleFileManager">
         <i class="fas fa-bars"></i>
       </button>
@@ -680,151 +680,55 @@ watch(isEditorView, (newValue) => {
   position: relative;
 }
 
-/* 文件管理器 */
+/* 统一的文件管理器样式 */
 .file-manager {
+  position: fixed;
+  top: 60px;
+  left: 0;
   width: 300px;
-  height: 100%;
+  height: calc(100vh - 60px);
   background: #fff;
-  border-right: 1px solid #ddd;
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.3s ease;
-  flex-shrink: 0;
-}
-
-.file-manager.collapsed {
+  z-index: 2500;
   transform: translateX(-100%);
-}
-
-.file-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px;
-  border-bottom: 1px solid #ddd;
-}
-
-.file-actions {
-  padding: 12px;
+  transition: transform 0.3s ease;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.15);
   display: flex;
   flex-direction: column;
-  gap: 8px;
 }
 
-.file-tree {
-  flex: 1;
-  overflow-y: auto;
-  padding: 12px;
+.file-manager.show {
+  transform: translateX(0);
 }
 
-.file-item {
-  display: flex;
-  align-items: center;
-  padding: 8px 12px;
-  cursor: pointer;
-  transition: all 0.2s;
-  border-radius: 4px;
-  margin: 2px 0;
-  position: relative;
+/* 统一的遮罩层样式 */
+.overlay {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
 }
 
-.file-item:hover {
-  background: #f8f9fa;
+.overlay.show {
+  opacity: 1;
+  visibility: visible;
 }
 
-.file-item.is-selected {
-  background: #e9ecef;
-}
-
-.file-item i {
-  width: 20px;
-  text-align: center;
-  margin-right: 8px;
-}
-
-.file-item .file-name {
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.file-item .file-actions,
-.file-item .folder-actions {
-  display: flex;
-  gap: 4px;
-  opacity: 1 !important;
-  padding: 0 !important;
-  margin-left: 8px !important;
-}
-
-.file-item .action-button {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 4px !important;
-  padding: 4px 8px !important;
-  background-color: #f8f9fa !important;
-  border: 1px solid #ddd !important;
-  border-radius: 4px !important;
-  color: #666 !important;
-  cursor: pointer !important;
-  min-width: 64px !important;
-  height: 28px !important;
-  white-space: nowrap !important;
-}
-
-.file-item .action-button i {
-  margin: 0 !important;
-  font-size: 14px !important;
-  width: 14px !important;
-  text-align: center !important;
-  color: inherit !important;
-}
-
-.file-item .action-button span {
-  font-size: 12px !important;
-  color: inherit !important;
-  display: inline-block !important;
-}
-
-/* 文件管理操作按钮 */
-.file-manager .file-actions .action-button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  background: #f8f9fa;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  color: #333;
-  cursor: pointer;
-  transition: all 0.2s;
-  width: 100%;
-}
-
-.file-manager .file-actions .action-button:hover {
-  background: #e9ecef;
-  border-color: #ced4da;
-}
-
-.file-manager .file-actions .action-button i {
-  font-size: 16px;
-}
-
-.file-manager .file-actions .action-button span {
-  font-size: 14px;
-}
-
-/* 编辑器容器 */
+/* 统一的编辑器容器样式 */
 .editor-container {
-  flex: 1;
+  margin-top: 60px;
+  height: calc(100vh - 60px);
+  width: 100%;
+  position: relative;
+  background: #fff;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  overflow: hidden;
-  margin-left: 20px;
 }
 
 .toolbar {
@@ -841,27 +745,142 @@ watch(isEditorView, (newValue) => {
   flex-wrap: wrap;
 }
 
-button {
-  margin: 0;
-  padding: 0;
-  border: none;
-  background: none;
-  font: inherit;
-  color: inherit;
-  line-height: normal;
+/* 工具栏按钮样式 */
+.format-buttons button,
+.view-buttons button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 80px;
+  justify-content: center;
 }
 
-button i {
+.format-buttons button:hover,
+.view-buttons button:hover {
+  background: #f0f0f0;
+}
+
+.format-buttons button i,
+.view-buttons button i {
+  font-size: 16px;
+  color: #666;
+}
+
+.format-buttons button span,
+.view-buttons button span {
   font-size: 14px;
+  color: #333;
+  display: inline-block;
+  white-space: nowrap;
 }
 
-button span {
+/* 移动端工具栏按钮适配 */
+@media (max-width: 768px) {
+  .format-buttons,
+  .view-buttons {
+    gap: 4px;
+  }
+
+  .format-buttons button,
+  .view-buttons button {
+    padding: 8px;
+    min-width: auto;
+  }
+
+  .format-buttons button i,
+  .view-buttons button i {
+    font-size: 18px;
+    margin: 0;
+  }
+
+  .format-buttons button span,
+  .view-buttons button span {
+    font-size: 12px;
+  }
+
+  .toolbar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 4px;
+  }
+
+  .format-buttons, 
+  .view-buttons {
+    flex-wrap: nowrap;
+  }
+}
+
+/* 文件管理器按钮样式 */
+.file-actions .action-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  justify-content: center;
+}
+
+.file-actions .action-button i {
+  font-size: 16px;
+  color: #666;
+}
+
+.file-actions .action-button span {
   font-size: 14px;
+  color: #333;
+  display: inline-block;
+  white-space: nowrap;
 }
 
-button:hover {
+.file-actions .action-button:hover {
   background: #e9ecef;
   border-color: #ced4da;
+}
+
+/* 文件项按钮样式 */
+.file-item .action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 60px;
+  justify-content: center;
+}
+
+.file-item .action-button i {
+  font-size: 14px;
+  width: auto;
+  margin: 0;
+}
+
+.file-item .action-button span {
+  font-size: 12px;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.file-item .action-button:hover {
+  background: #f8f9fa;
+  color: #333;
 }
 
 .editor-content {
@@ -993,41 +1012,41 @@ button:hover {
   display: flex;
 }
 
-/* 移动端导航栏 */
+/* 统一的导航栏样式 */
 .mobile-nav {
-  position: sticky;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 56px;
-  z-index: 1001;
+  height: 60px;
+  z-index: 3000;
   background: #fff;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   display: flex;
   align-items: center;
-  padding: 0 16px;
-  border-bottom: 1px solid #ddd;
+  padding: 0 12px;
 }
 
 .menu-button {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid #007bff;
-  background: #fff;
-  color: #007bff;
+  border: none;
+  background: #007bff;
+  color: #fff;
   font-size: 24px;
   padding: 0;
   border-radius: 12px;
   transition: all 0.2s ease;
+  z-index: 3001;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .menu-button:active {
-  background: #007bff;
-  color: #fff;
   transform: scale(0.95);
+  background: #0056b3;
 }
 
 .menu-button i {
@@ -1037,196 +1056,22 @@ button:hover {
 .mobile-title {
   margin: 0;
   font-size: 18px;
-  margin-left: 12px;
+  margin-left: 16px;
   font-weight: 500;
   color: #333;
   flex: 1;
 }
 
-/* 遮罩层 */
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0,0,0,0.3);
-  z-index: 1999;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease;
-}
-
-.overlay.show {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* 响应式布局 */
+/* 响应式调整 */
 @media (max-width: 768px) {
-  .markdown-editor {
-    height: 100vh;
-    width: 100vw;
-    position: fixed;
-    top: 0;
-    left: 0;
-    overflow: hidden;
-  }
-
-  .main-content {
-    flex-direction: row;
-    height: calc(100vh - 56px);
-    position: relative;
-  }
-
-  /* 文件管理器 */
   .file-manager {
-    position: fixed;
-    top: 56px;
-    left: 0;
-    width: 80%;
-    height: calc(100vh - 56px);
-    background: #fff;
-    z-index: 2000;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+    width: 85%;
   }
+}
 
-  .file-manager.show {
-    transform: translateX(0);
-  }
-
-  /* 遮罩层 */
-  .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.3);
-    z-index: 1999;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease;
-  }
-
-  .overlay.show {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  /* 编辑器容器 */
-  .editor-container {
-    margin: 0;
-    border: none;
-    height: 100%;
-    width: 100%;
-    position: relative;
-    background: #fff;
-    display: flex;
-    flex-direction: column;
-    z-index: 1;
-  }
-
-  /* 移动端导航栏 */
-  .mobile-nav {
-    position: sticky;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 56px;
-    z-index: 1001;
-    background: #fff;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    display: flex;
-    align-items: center;
-    padding: 0 16px;
-  }
-
-  .menu-button {
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid #007bff;
-    background: #fff;
-    color: #007bff;
-    font-size: 24px;
-    padding: 0;
-    border-radius: 12px;
-    transition: all 0.2s ease;
-  }
-
-  .menu-button:active {
-    background: #007bff;
-    color: #fff;
-    transform: scale(0.95);
-  }
-
-  .menu-button i {
-    margin: 0;
-  }
-
-  .mobile-title {
-    margin: 0;
-    font-size: 18px;
-    margin-left: 12px;
-    font-weight: 500;
-    color: #333;
-    flex: 1;
-  }
-
-  /* 根据视图状态显示内容 */
-  .markdown-editor[data-view="editor"] .editor-container {
-    display: flex;
-  }
-
-  .markdown-editor[data-view="files"] .file-manager {
-    display: block;
-  }
-
-  /* 工具栏样式优化 */
-  .toolbar {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: #fff;
-    padding: 8px;
-    border-bottom: 1px solid #ddd;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    height: 56px;
-    display: flex;
-    align-items: center;
-  }
-
-  /* 编辑器内容区域 */
-  .editor-content {
-    height: calc(100vh - 112px);
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .editor,
-  .preview {
-    padding: 16px;
-    font-size: 16px;
-    line-height: 1.6;
-  }
-
-  /* 分屏预览模式优化 */
-  .editor-wrapper.split-view {
-    flex-direction: column;
-  }
-
-  .editor-wrapper.split-view .editor,
-  .editor-wrapper.split-view .preview {
-    max-width: 100%;
-    width: 100%;
-    height: 50%;
-    min-height: calc((100vh - 112px) / 2);
+@media (min-width: 769px) {
+  .file-manager {
+    width: 300px;
   }
 }
 
@@ -1304,19 +1149,5 @@ button:hover {
 .file-item:hover .file-actions,
 .file-item:hover .folder-actions {
   opacity: 1;
-}
-
-.file-item .action-button {
-  padding: 4px 8px;
-  background: none;
-  border: none;
-  color: #666;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.file-item .action-button:hover {
-  background: #e9ecef;
-  color: #333;
 }
 </style> 
