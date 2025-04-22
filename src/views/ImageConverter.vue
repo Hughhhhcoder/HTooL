@@ -12,6 +12,32 @@
         <button class="btn" @click="clearFiles" :disabled="!files.length || isConverting">
           <i class="fas fa-trash"></i> 清空
         </button>
+        <div class="batch-settings" v-if="files.length">
+          <div class="format-settings">
+            <label>
+              批量设置格式:
+              <select v-model="batchFormat" @change="applyBatchFormat" :disabled="isConverting">
+                <option value="">选择格式...</option>
+                <option value="png">PNG</option>
+                <option value="jpg">JPG</option>
+                <option value="webp">WebP</option>
+                <option value="gif">GIF</option>
+              </select>
+            </label>
+            <label v-if="batchFormat && batchFormat !== 'gif'">
+              批量设置质量:
+              <input 
+                type="range" 
+                v-model="batchQuality" 
+                @change="applyBatchQuality"
+                min="1" 
+                max="100" 
+                :disabled="isConverting"
+              />
+              <span>{{ batchQuality }}%</span>
+            </label>
+          </div>
+        </div>
         <button class="btn" @click="convertAll" :disabled="!files.length || isConverting">
           <i class="fas fa-exchange-alt"></i> 转换全部
         </button>
@@ -36,6 +62,19 @@
               <option value="webp">WebP</option>
               <option value="gif">GIF</option>
             </select>
+            <div class="compression-options" v-if="file.targetFormat !== 'gif'">
+              <label>
+                压缩质量:
+                <input 
+                  type="range" 
+                  v-model="file.quality" 
+                  min="1" 
+                  max="100" 
+                  :disabled="isConverting"
+                />
+                <span>{{ file.quality }}%</span>
+              </label>
+            </div>
             <button class="btn" @click="convertFile(file)" :disabled="isConverting">
               <i class="fas fa-exchange-alt"></i> 转换
             </button>
@@ -96,6 +135,8 @@ const maintainAspectRatio = ref(true)
 const isConverting = ref(false)
 const files = ref([])
 const convertedFiles = ref([])
+const batchFormat = ref('')
+const batchQuality = ref(80)
 
 const goBack = () => {
   router.push('/')
@@ -116,9 +157,7 @@ const handleDrop = (e) => {
   const newFiles = Array.from(e.dataTransfer.files)
   newFiles.forEach(file => {
     if (file.type.startsWith('image/')) {
-      file.targetFormat = 'png'
-      file.converting = false
-      file.progress = 0
+      initFileDefaults(file)
       files.value.push(file)
     }
   })
@@ -154,7 +193,14 @@ watch([width, height, maintainAspectRatio], ([newWidth, newHeight, maintain]) =>
   img.src = previewUrl.value
 })
 
-const convertImage = (file, targetFormat) => {
+const initFileDefaults = (file) => {
+  file.targetFormat = 'png'
+  file.converting = false
+  file.progress = 0
+  file.quality = 80 // 默认压缩质量
+}
+
+const convertImage = (file, targetFormat, quality) => {
   return new Promise((resolve, reject) => {
     if (!file || !file.type.startsWith('image/')) {
       reject(new Error('无效的文件类型'))
@@ -171,6 +217,12 @@ const convertImage = (file, targetFormat) => {
         const ctx = canvas.getContext('2d')
         ctx.drawImage(img, 0, 0)
 
+        // 设置压缩选项
+        const options = {
+          quality: quality / 100,
+          type: `image/${targetFormat}`
+        }
+
         canvas.toBlob((blob) => {
           if (!blob) {
             reject(new Error('转换失败'))
@@ -180,7 +232,7 @@ const convertImage = (file, targetFormat) => {
             type: `image/${targetFormat}`
           })
           resolve(newFile)
-        }, `image/${targetFormat}`)
+        }, `image/${targetFormat}`, options.quality)
       }
       img.onerror = () => reject(new Error('图片加载失败'))
       img.src = e.target.result
@@ -213,9 +265,7 @@ const selectFiles = () => {
     const newFiles = Array.from(e.target.files)
     newFiles.forEach(file => {
       if (file.type.startsWith('image/')) {
-        file.targetFormat = 'png'
-        file.converting = false
-        file.progress = 0
+        initFileDefaults(file)
         files.value.push(file)
       }
     })
@@ -250,7 +300,7 @@ const convertFile = async (file) => {
   file.progress = 0
   
   try {
-    const result = await convertImage(file, file.targetFormat)
+    const result = await convertImage(file, file.targetFormat, file.quality)
     if (result) {
       convertedFiles.value.push(result)
       file.progress = 100
@@ -274,7 +324,7 @@ const convertAll = async () => {
       file.progress = 0
       
       try {
-        const result = await convertImage(file, file.targetFormat)
+        const result = await convertImage(file, file.targetFormat, file.quality)
         convertedFiles.value.push(result)
         file.progress = 100
       } catch (error) {
@@ -305,6 +355,23 @@ const downloadFile = (file) => {
 const downloadAll = () => {
   convertedFiles.value.forEach(file => {
     downloadFile(file)
+  })
+}
+
+// 应用批量格式设置
+const applyBatchFormat = () => {
+  if (!batchFormat.value) return
+  files.value.forEach(file => {
+    file.targetFormat = batchFormat.value
+  })
+}
+
+// 应用批量质量设置
+const applyBatchQuality = () => {
+  files.value.forEach(file => {
+    if (file.targetFormat !== 'gif') {
+      file.quality = batchQuality.value
+    }
   })
 }
 </script>
@@ -489,6 +556,85 @@ const downloadAll = () => {
 
   .file-info {
     flex-wrap: wrap;
+  }
+}
+
+.compression-options {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.compression-options label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.compression-options input[type="range"] {
+  width: 100px;
+  margin: 0;
+}
+
+.batch-settings {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px;
+  background-color: var(--bg-color);
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+}
+
+.format-settings {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.format-settings label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.format-settings select {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+}
+
+.format-settings input[type="range"] {
+  width: 100px;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .batch-settings {
+    width: 100%;
+  }
+  
+  .format-settings {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .format-settings label {
+    justify-content: space-between;
+  }
+
+  .format-settings select,
+  .format-settings input[type="range"] {
+    width: 150px;
   }
 }
 </style> 

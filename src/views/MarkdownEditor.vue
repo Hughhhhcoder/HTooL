@@ -4,7 +4,7 @@
     <div class="mobile-nav">
       <button class="menu-button" @click="toggleFileManager">
         <i class="fas fa-bars"></i>
-      </button>
+        </button>
       <h2 class="mobile-title">Markdown 编辑器</h2>
     </div>
 
@@ -19,13 +19,13 @@
           <div class="header-actions">
             <button class="toggle-button" @click="showFileManager = !showFileManager">
               <i :class="showFileManager ? 'fas fa-chevron-left' : 'fas fa-chevron-right'"></i>
-            </button>
-          </div>
+        </button>
+      </div>
         </div>
         
         <!-- 当前路径导航 -->
         <div class="path-navigator">
-          <button 
+        <button 
             v-for="(segment, index) in currentPathSegments" 
             :key="index"
             @click="navigateToPath(segment.path)"
@@ -48,7 +48,7 @@
           <button @click="createNewFolder" class="action-button" :disabled="!currentFolder?.handle">
             <i class="fas fa-folder-plus"></i>
             <span>新建文件夹</span>
-          </button>
+        </button>
         </div>
         
         <!-- 文件树 -->
@@ -82,13 +82,13 @@
                 <button @click.stop="createNewFile" class="action-button">
                   <i class="fas fa-file"></i>
                   <span>新建</span>
-                </button>
+        </button>
                 <button @click.stop="deleteFolder(item.path)" class="action-button">
                   <i class="fas fa-trash"></i>
                   <span>删除</span>
-                </button>
-              </div>
-            </div>
+        </button>
+      </div>
+    </div>
           </template>
         </div>
       </div>
@@ -1036,7 +1036,7 @@ watch(isEditorView, (newValue) => {
   border: none;
   background: #007bff;
   color: #fff;
-  font-size: 24px;
+    font-size: 24px;
   padding: 0;
   border-radius: 12px;
   transition: all 0.2s ease;
@@ -1055,7 +1055,7 @@ watch(isEditorView, (newValue) => {
 
 .mobile-title {
   margin: 0;
-  font-size: 18px;
+    font-size: 18px;
   margin-left: 16px;
   font-weight: 500;
   color: #333;
@@ -1093,9 +1093,9 @@ watch(isEditorView, (newValue) => {
   border: none;
   color: #333;
   cursor: pointer;
-  font-size: 14px;
-}
-
+    font-size: 14px;
+  }
+  
 .path-segment:hover {
   background: #e9ecef;
   border-radius: 4px;
