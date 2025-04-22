@@ -318,44 +318,83 @@ const convertAll = async () => {
   const totalFiles = files.value.length
   let completedFiles = 0
 
-  for (const file of files.value) {
-    if (!file.converting) {
-      file.converting = true
-      file.progress = 0
-      
-      try {
-        const result = await convertImage(file, file.targetFormat, file.quality)
-        convertedFiles.value.push(result)
-        file.progress = 100
-      } catch (error) {
-        console.error('转换失败:', error)
-      } finally {
-        file.converting = false
-        completedFiles++
+  try {
+    // 使用 Promise.all 并行处理所有文件
+    const conversionPromises = files.value.map(async (file) => {
+      if (!file.converting) {
+        file.converting = true
+        file.progress = 0
+        
+        try {
+          const result = await convertImage(file, file.targetFormat, file.quality)
+          file.progress = 100
+          return result
+        } catch (error) {
+          console.error('转换失败:', error)
+          return null
+        } finally {
+          file.converting = false
+          completedFiles++
+        }
       }
-    }
-  }
+      return null
+    })
 
-  isConverting.value = false
+    // 等待所有转换完成并过滤掉失败的结果
+    const results = await Promise.all(conversionPromises)
+    const successfulResults = results.filter(result => result !== null)
+    
+    // 将新转换的文件添加到已转换文件列表中
+    convertedFiles.value = [...convertedFiles.value, ...successfulResults]
+  } catch (error) {
+    console.error('批量转换失败:', error)
+  } finally {
+    isConverting.value = false
+  }
 }
 
 // 下载单个文件
 const downloadFile = (file) => {
-  const url = URL.createObjectURL(file)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = file.name
-  document.body.appendChild(a)
-  a.click()
-  document.body.removeChild(a)
-  URL.revokeObjectURL(url)
+  if (!file) return
+
+  try {
+    const url = URL.createObjectURL(file)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = file.name
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  } catch (error) {
+    console.error('下载失败:', error)
+  }
 }
 
 // 下载所有文件
 const downloadAll = () => {
-  convertedFiles.value.forEach(file => {
-    downloadFile(file)
-  })
+  // 使用 setTimeout 来分批下载文件，避免浏览器限制
+  const batchSize = 5
+  const totalFiles = convertedFiles.value.length
+  
+  const downloadBatch = (startIndex) => {
+    const endIndex = Math.min(startIndex + batchSize, totalFiles)
+    
+    for (let i = startIndex; i < endIndex; i++) {
+      const file = convertedFiles.value[i]
+      if (file) {
+        downloadFile(file)
+      }
+    }
+    
+    if (endIndex < totalFiles) {
+      // 如果还有文件未下载，等待一段时间后继续下载下一批
+      setTimeout(() => downloadBatch(endIndex), 1000)
+    }
+  }
+  
+  // 开始下载第一批
+  downloadBatch(0)
 }
 
 // 应用批量格式设置
