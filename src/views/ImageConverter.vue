@@ -120,37 +120,24 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue'
+import { ref, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+import {
+  buildConvertedFileName,
+  normalizeQuality,
+  toMimeType
+} from '../utils/imageConverter'
 
 const router = useRouter()
-const fileInput = ref(null)
-const selectedFile = ref(null)
-const previewUrl = ref('')
-const targetFormat = ref('jpeg')
-const quality = ref(80)
-const width = ref('')
-const height = ref('')
-const maintainAspectRatio = ref(true)
 const isConverting = ref(false)
 const files = ref([])
 const convertedFiles = ref([])
 const batchFormat = ref('')
 const batchQuality = ref(80)
+const downloadTimeouts = new Set()
 
 const goBack = () => {
   router.push('/')
-}
-
-const triggerFileInput = () => {
-  fileInput.value.click()
-}
-
-const handleFileSelect = (event) => {
-  const file = event.target.files[0]
-  if (file) {
-    processFile(file)
-  }
 }
 
 const handleDrop = (e) => {
@@ -163,11 +150,6 @@ const handleDrop = (e) => {
   })
 }
 
-const processFile = (file) => {
-  selectedFile.value = file
-  previewUrl.value = URL.createObjectURL(file)
-}
-
 const formatFileSize = (bytes) => {
   if (bytes === 0) return '0 B'
   const k = 1024
@@ -175,23 +157,6 @@ const formatFileSize = (bytes) => {
   const i = Math.floor(Math.log(bytes) / Math.log(k))
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
-
-// 监听宽高变化，保持宽高比
-watch([width, height, maintainAspectRatio], ([newWidth, newHeight, maintain]) => {
-  if (!maintain || !selectedFile.value) return
-  
-  const img = new Image()
-  img.onload = () => {
-    const aspectRatio = img.width / img.height
-    
-    if (newWidth && !newHeight) {
-      height.value = Math.round(newWidth / aspectRatio)
-    } else if (!newWidth && newHeight) {
-      width.value = Math.round(newHeight * aspectRatio)
-    }
-  }
-  img.src = previewUrl.value
-})
 
 const initFileDefaults = (file) => {
   file.targetFormat = 'png'
@@ -218,21 +183,19 @@ const convertImage = (file, targetFormat, quality) => {
         ctx.drawImage(img, 0, 0)
 
         // 设置压缩选项
-        const options = {
-          quality: quality / 100,
-          type: `image/${targetFormat}`
-        }
+        const normalizedQuality = normalizeQuality(quality)
+        const mimeType = toMimeType(targetFormat)
 
         canvas.toBlob((blob) => {
           if (!blob) {
             reject(new Error('转换失败'))
             return
           }
-          const newFile = new File([blob], `${file.name.split('.')[0]}.${targetFormat}`, {
-            type: `image/${targetFormat}`
+          const newFile = new File([blob], buildConvertedFileName(file.name, targetFormat), {
+            type: mimeType
           })
           resolve(newFile)
-        }, `image/${targetFormat}`, options.quality)
+        }, mimeType, normalizedQuality)
       }
       img.onerror = () => reject(new Error('图片加载失败'))
       img.src = e.target.result
@@ -315,8 +278,6 @@ const convertFile = async (file) => {
 // 转换所有文件
 const convertAll = async () => {
   isConverting.value = true
-  const totalFiles = files.value.length
-  let completedFiles = 0
 
   try {
     // 使用 Promise.all 并行处理所有文件
@@ -334,7 +295,6 @@ const convertAll = async () => {
           return null
         } finally {
           file.converting = false
-          completedFiles++
         }
       }
       return null
@@ -389,7 +349,11 @@ const downloadAll = () => {
     
     if (endIndex < totalFiles) {
       // 如果还有文件未下载，等待一段时间后继续下载下一批
-      setTimeout(() => downloadBatch(endIndex), 1000)
+      const timeoutId = setTimeout(() => {
+        downloadTimeouts.delete(timeoutId)
+        downloadBatch(endIndex)
+      }, 1000)
+      downloadTimeouts.add(timeoutId)
     }
   }
   
@@ -413,6 +377,11 @@ const applyBatchQuality = () => {
     }
   })
 }
+
+onUnmounted(() => {
+  downloadTimeouts.forEach((timeoutId) => clearTimeout(timeoutId))
+  downloadTimeouts.clear()
+})
 </script>
 
 <style scoped>

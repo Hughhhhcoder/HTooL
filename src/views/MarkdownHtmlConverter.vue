@@ -69,104 +69,115 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
-import { marked } from 'marked';
-import TurndownService from 'turndown';
+import { ref, watch } from 'vue'
+import {
+  markedRenderOptions,
+  turndownOptions,
+  strikethroughReplacement
+} from '../utils/markdownHtml'
 
-const markdownInput = ref('');
-const htmlOutput = ref('');
-const htmlInput = ref('');
-const markdownOutput = ref('');
-const previewMode = ref('HTML');
+const markdownInput = ref('')
+const htmlOutput = ref('')
+const htmlInput = ref('')
+const markdownOutput = ref('')
+const previewMode = ref('HTML')
 
-const turndownService = new TurndownService({
-  headingStyle: 'atx',
-  codeBlockStyle: 'fenced',
-  bulletListMarker: '-',
-  emDelimiter: '_',
-  strongDelimiter: '**',
-  linkStyle: 'inlined',
-  linkReferenceStyle: 'full'
-});
+let markedLib = null
+let turndownService = null
 
-// 添加自定义规则
-turndownService.addRule('strikethrough', {
-  filter: ['del', 's'],
-  replacement: function (content) {
-    return '~~' + content + '~~';
-  }
-});
+const ensureMarked = async () => {
+  if (markedLib) return markedLib
+  const markedModule = await import('marked')
+  markedLib = markedModule.marked
+  return markedLib
+}
 
-const convertToHtml = () => {
+const ensureTurndown = async () => {
+  if (turndownService) return turndownService
+  const { default: TurndownService } = await import('turndown')
+
+  turndownService = new TurndownService(turndownOptions)
+
+  turndownService.addRule('strikethrough', {
+    filter: ['del', 's'],
+    replacement(content) {
+      return strikethroughReplacement(content)
+    }
+  })
+
+  return turndownService
+}
+
+const convertToHtml = async () => {
   try {
-    htmlOutput.value = marked(markdownInput.value, {
-      breaks: true,
-      gfm: true,
-      headerIds: true,
-      mangle: false
-    });
+    const marked = await ensureMarked()
+    htmlOutput.value = marked(markdownInput.value, markedRenderOptions)
   } catch (error) {
-    console.error('Markdown 转换错误:', error);
-    htmlOutput.value = '<div class="error">转换出错，请检查输入内容</div>';
+    console.error('Markdown 转换错误:', error)
+    htmlOutput.value = '<div class="error">转换出错，请检查输入内容</div>'
   }
-};
+}
 
-const convertToMarkdown = () => {
+const convertToMarkdown = async () => {
   try {
-    markdownOutput.value = turndownService.turndown(htmlInput.value);
+    const converter = await ensureTurndown()
+    markdownOutput.value = converter.turndown(htmlInput.value)
   } catch (error) {
-    console.error('HTML 转换错误:', error);
-    markdownOutput.value = '转换出错，请检查输入内容';
+    console.error('HTML 转换错误:', error)
+    markdownOutput.value = '转换出错，请检查输入内容'
   }
-};
+}
 
 const clearInput = (type) => {
   if (type === 'markdown') {
-    markdownInput.value = '';
-    htmlOutput.value = '';
+    markdownInput.value = ''
+    htmlOutput.value = ''
   } else {
-    htmlInput.value = '';
-    markdownOutput.value = '';
+    htmlInput.value = ''
+    markdownOutput.value = ''
   }
-};
+}
 
 const copyOutput = async () => {
-  const text = previewMode.value === 'HTML' ? htmlOutput.value : markdownOutput.value;
+  const text = previewMode.value === 'HTML' ? htmlOutput.value : markdownOutput.value
   try {
-    await navigator.clipboard.writeText(text);
-    alert('已复制到剪贴板');
+    await navigator.clipboard.writeText(text)
+    alert('已复制到剪贴板')
   } catch (error) {
-    console.error('复制失败:', error);
-    alert('复制失败，请手动复制');
+    console.error('复制失败:', error)
+    alert('复制失败，请手动复制')
   }
-};
+}
 
 const downloadOutput = () => {
-  const text = previewMode.value === 'HTML' ? htmlOutput.value : markdownOutput.value;
-  const extension = previewMode.value === 'HTML' ? 'html' : 'md';
-  const blob = new Blob([text], { type: 'text/plain' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `converted.${extension}`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-};
+  const text = previewMode.value === 'HTML' ? htmlOutput.value : markdownOutput.value
+  const extension = previewMode.value === 'HTML' ? 'html' : 'md'
+  const blob = new Blob([text], { type: 'text/plain' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `converted.${extension}`
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  URL.revokeObjectURL(url)
+}
 
-// 监听输入变化
 watch(markdownInput, () => {
   if (markdownInput.value) {
-    convertToHtml();
+    convertToHtml()
+  } else {
+    htmlOutput.value = ''
   }
-});
+})
 
 watch(htmlInput, () => {
   if (htmlInput.value) {
-    convertToMarkdown();
+    convertToMarkdown()
+  } else {
+    markdownOutput.value = ''
   }
-});
+})
 </script>
 
 <style scoped>

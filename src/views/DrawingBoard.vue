@@ -80,18 +80,16 @@ const initCanvas = () => {
 // 获取画布坐标
 const getCanvasCoordinates = (event) => {
   const rect = canvas.value.getBoundingClientRect();
-  const scaleX = canvas.value.width / rect.width;
-  const scaleY = canvas.value.height / rect.height;
   
   if (event.type.includes('touch')) {
     return {
-      x: (event.touches[0].clientX - rect.left) * scaleX,
-      y: (event.touches[0].clientY - rect.top) * scaleY
+      x: event.touches[0].clientX - rect.left,
+      y: event.touches[0].clientY - rect.top
     };
   } else {
     return {
-      x: (event.offsetX) * scaleX,
-      y: (event.offsetY) * scaleY
+      x: event.offsetX,
+      y: event.offsetY
     };
   }
 };

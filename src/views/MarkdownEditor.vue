@@ -179,12 +179,11 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
-import { marked } from 'marked'
-import DOMPurify from 'dompurify'
 
 // 基础状态
 const editor = ref(null)
 const content = ref('')
+const previewContent = ref('')
 const isPreview = ref(false)
 const isLivePreview = ref(false)
 const currentPath = ref('/')
@@ -193,6 +192,10 @@ const showFileManager = ref(false)
 const focusMode = ref(false)
 const isMobile = ref(window.innerWidth <= 768)
 const isEditorView = ref(true)
+
+let markedLib = null
+let dompurifyLib = null
+let previewRenderToken = 0
 
 // 文件系统状态
 const fileSystem = ref({
@@ -211,10 +214,13 @@ const handleResize = () => {
   isMobile.value = window.innerWidth <= 768
   if (!isMobile.value) {
     showFileManager.value = true
+  } else {
+    showFileManager.value = false
   }
 }
 
 onMounted(() => {
+  handleResize()
   window.addEventListener('resize', handleResize)
 })
 
@@ -222,14 +228,53 @@ onUnmounted(() => {
   window.removeEventListener('resize', handleResize)
 })
 
-const previewContent = computed(() => {
-  return DOMPurify.sanitize(marked(content.value))
+const ensureMarkdownRenderer = async () => {
+  if (!markedLib) {
+    const markedModule = await import('marked')
+    markedLib = markedModule.marked
+  }
+
+  if (!dompurifyLib) {
+    const dompurifyModule = await import('dompurify')
+    dompurifyLib = dompurifyModule.default
+  }
+}
+
+const renderPreview = async () => {
+  const token = ++previewRenderToken
+  const source = content.value || ''
+
+  if (!source.trim()) {
+    previewContent.value = ''
+    return
+  }
+
+  try {
+    await ensureMarkdownRenderer()
+    const html = markedLib(source, {
+      breaks: true,
+      gfm: true,
+      headerIds: true,
+      mangle: false
+    })
+
+    if (token !== previewRenderToken) return
+    previewContent.value = dompurifyLib.sanitize(html)
+  } catch (error) {
+    if (token !== previewRenderToken) return
+    previewContent.value = '<p class="preview-error">预览渲染失败，请检查 Markdown 内容。</p>'
+  }
+}
+
+watch(content, () => {
+  if (isLivePreview.value || isPreview.value) {
+    void renderPreview()
+  }
 })
 
-// 监听内容变化，实时更新预览
-watch(() => content.value, (newContent) => {
-  if (isLivePreview.value) {
-    previewContent.value = DOMPurify.sanitize(marked(newContent))
+watch([isLivePreview, isPreview], ([live, preview]) => {
+  if (live || preview) {
+    void renderPreview()
   }
 })
 
@@ -307,6 +352,7 @@ const toggleLivePreview = () => {
   isLivePreview.value = !isLivePreview.value
   if (isLivePreview.value) {
     isPreview.value = false
+    void renderPreview()
   }
 }
 
@@ -314,6 +360,7 @@ const togglePreview = () => {
   isPreview.value = !isPreview.value
   if (isPreview.value) {
     isLivePreview.value = false
+    void renderPreview()
   }
 }
 
@@ -341,16 +388,6 @@ const browseLocalFolder = async () => {
     await loadFolder(dirHandle)
   } catch (error) {
     console.error('Error browsing folder:', error)
-  }
-}
-
-// 导入文件夹
-const importFolder = async () => {
-  try {
-    const dirHandle = await window.showDirectoryPicker()
-    await loadFolder(dirHandle)
-  } catch (error) {
-    console.error('Error importing folder:', error)
   }
 }
 
@@ -560,41 +597,6 @@ const handleItemClick = (item) => {
   } else {
     editFile(item)
   }
-}
-
-// 渲染文件树
-const renderFileTree = (items, level = 0) => {
-  return Object.values(items).map(item => {
-    const indent = '  '.repeat(level)
-    const hasChildren = item.isFolder && Object.keys(item.children).length > 0
-    
-    return `
-      <div 
-        class="file-item"
-        :class="{ 
-          'is-folder': item.isFolder,
-          'is-expanded': item.expanded,
-          'is-selected': currentFile?.path === item.path
-        }"
-        :style="{ paddingLeft: '${level * 20}px' }"
-        @click="handleItemClick(item)"
-      >
-        <i :class="item.isFolder ? (item.expanded ? 'fas fa-folder-open' : 'fas fa-folder') : 'fas fa-file'"></i>
-        <span class="file-name">{{ item.name }}</span>
-        <div class="file-actions" v-if="!item.isFolder">
-          <button @click.stop="editFile(item)" class="action-button">
-            <i class="fas fa-edit"></i>
-            <span>编辑</span>
-          </button>
-          <button @click.stop="deleteFile(item.path)" class="action-button">
-            <i class="fas fa-trash"></i>
-            <span>删除</span>
-          </button>
-        </div>
-      </div>
-      ${hasChildren && item.expanded ? renderFileTree(item.children, level + 1) : ''}
-    `
-  }).join('')
 }
 
 // 创建新文件夹
@@ -927,6 +929,10 @@ watch(isEditorView, (newValue) => {
   padding: 20px;
   background: #fff;
   border-left: 1px solid #ddd;
+}
+
+.preview :deep(.preview-error) {
+  color: #d32f2f;
 }
 
 /* Markdown 样式 */

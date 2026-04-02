@@ -1,13 +1,13 @@
 <template>
   <div class="ip-location">
     <h2>IP 地址定位</h2>
-    
+
     <div class="location-section">
       <div class="input-section">
         <div class="ip-input">
-          <input 
-            type="text" 
-            v-model="ipAddress" 
+          <input
+            type="text"
+            v-model="ipAddress"
             placeholder="输入IP地址，例如：8.8.8.8"
           />
           <button @click="getCurrentIP" class="secondary-button">获取当前IP</button>
@@ -65,51 +65,54 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref } from 'vue'
 
-const ipAddress = ref('');
-const loading = ref(false);
-const error = ref('');
-const locationData = ref(null);
+const ipAddress = ref('')
+const loading = ref(false)
+const error = ref('')
+const locationData = ref(null)
 
-// 获取当前IP
+const ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
+
 const getCurrentIP = async () => {
   try {
-    loading.value = true;
-    error.value = '';
-    const response = await fetch('https://api.ipify.org?format=json');
-    const data = await response.json();
-    ipAddress.value = data.ip;
-    await searchLocation();
-  } catch (err) {
-    error.value = '获取当前IP失败：' + err.message;
-  } finally {
-    loading.value = false;
-  }
-};
+    loading.value = true
+    error.value = ''
 
-// 查询位置
+    const response = await fetch('https://api.ipify.org?format=json')
+    if (!response.ok) throw new Error(`HTTP ${response.status}`)
+
+    const data = await response.json()
+    ipAddress.value = data.ip
+    await searchLocation()
+  } catch (err) {
+    error.value = `获取当前IP失败：${err.message}`
+  } finally {
+    loading.value = false
+  }
+}
+
 const searchLocation = async () => {
   if (!ipAddress.value) {
-    error.value = '请输入IP地址';
-    return;
+    error.value = '请输入IP地址'
+    return
   }
 
-  // 验证IP地址格式
-  const ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
   if (!ipRegex.test(ipAddress.value)) {
-    error.value = '请输入有效的IP地址';
-    return;
+    error.value = '请输入有效的IP地址'
+    return
   }
 
   try {
-    loading.value = true;
-    error.value = '';
-    const response = await fetch(`https://ipinfo.io/${ipAddress.value}/json`);
-    const data = await response.json();
-    
+    loading.value = true
+    error.value = ''
+
+    const response = await fetch(`https://ipinfo.io/${ipAddress.value}/json`)
+    if (!response.ok) throw new Error(`HTTP ${response.status}`)
+
+    const data = await response.json()
     if (data.error) {
-      throw new Error(data.error);
+      throw new Error(data.error)
     }
 
     locationData.value = {
@@ -121,33 +124,34 @@ const searchLocation = async () => {
       loc: data.loc,
       timezone: data.timezone,
       org: data.org
-    };
+    }
   } catch (err) {
-    error.value = '查询失败：' + err.message;
-    locationData.value = null;
+    error.value = `查询失败：${err.message}`
+    locationData.value = null
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 </script>
 
 <style scoped>
 .ip-location {
   padding: 20px;
-  max-width: 800px;
+  max-width: 840px;
   margin: 0 auto;
 }
 
 .location-section {
-  background: #f5f5f5;
+  background: var(--bg-color-secondary);
+  border: 1px solid var(--border-color);
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
 .input-section {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
   margin-bottom: 20px;
 }
 
@@ -159,434 +163,84 @@ const searchLocation = async () => {
 .ip-input input {
   flex: 1;
   padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+.primary-button,
+.secondary-button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
 }
 
 .primary-button {
-  background: #007bff;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
+  background: var(--primary-color);
 }
 
 .secondary-button {
-  background: #6c757d;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
+  background: #6b7280;
 }
 
 .primary-button:hover {
-  background: #0056b3;
+  background: var(--primary-color-dark);
 }
 
 .secondary-button:hover {
-  background: #5a6268;
+  background: #4b5563;
 }
 
 .loading {
   text-align: center;
-  padding: 20px;
-  color: #666;
+  padding: 16px;
+  color: var(--text-secondary);
 }
 
 .error-message {
-  padding: 15px;
-  background: #f8d7da;
-  color: #721c24;
-  border-radius: 4px;
-  margin-bottom: 20px;
+  padding: 12px;
+  background: #fdecec;
+  color: #b42318;
+  border-radius: 8px;
+  margin-bottom: 16px;
 }
 
 .location-result {
-  background: white;
-  padding: 20px;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  padding: 16px;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .result-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 15px;
-  margin-top: 15px;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
 }
 
 .result-item {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 3px;
 }
 
 .label {
-  font-weight: bold;
-  color: #666;
+  font-weight: 700;
+  color: var(--text-secondary);
 }
 
 .value {
-  color: #333;
+  color: var(--text-color);
   word-break: break-all;
 }
 
-/* 暗色模式支持 */
-.dark-theme .ip-container {
-  background: #2d2d2d;
-  border-color: #444;
-}
-
-.dark-theme .input-section,
-.dark-theme .output-section {
-  background: #333;
-  border-color: #444;
-}
-
-.dark-theme .input-section h3,
-.dark-theme .output-section h3 {
-  color: #fff;
-  border-color: #444;
-}
-
-.dark-theme .input-section input {
-  background: #2d2d2d;
-  border-color: #444;
-  color: #ddd;
-}
-
-.dark-theme .input-section input::placeholder {
-  color: #666;
-}
-
-.dark-theme .input-section input:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-}
-
-.dark-theme .action-buttons button {
-  background: #3a3a3a;
-  border-color: #444;
-  color: #ddd;
-}
-
-.dark-theme .action-buttons button:hover {
-  background: #444;
-  color: #fff;
-}
-
-.dark-theme .action-buttons button:active {
-  background: #333;
-}
-
-.dark-theme .result-display {
-  background: #333;
-  border-color: #444;
-}
-
-.dark-theme .result-display .placeholder {
-  color: #666;
-}
-
-.dark-theme .result-display .placeholder i {
-  color: #444;
-}
-
-.dark-theme .result-display .ip-info {
-  color: #ddd;
-}
-
-.dark-theme .result-display .ip-info .info-item {
-  border-color: #444;
-}
-
-.dark-theme .result-display .ip-info .info-label {
-  color: #aaa;
-}
-
-.dark-theme .result-display .ip-info .info-value {
-  color: #fff;
-}
-
-.dark-theme .result-display .map-container {
-  background: #333;
-  border-color: #444;
-}
-
-.dark-theme .result-display .map-container iframe {
-  border-color: #444;
-}
-
-.dark-theme .mobile-nav {
-  background: #333;
-  border-color: #444;
-}
-
-.dark-theme .mobile-nav button {
-  color: #ddd;
-}
-
-.dark-theme .mobile-nav button:hover {
-  color: #fff;
-}
-
-/* 暗色模式下的错误提示样式 */
-.dark-theme .error-message {
-  background: #3a3a3a;
-  border-color: #dc3545;
-  color: #ff6b6b;
-}
-
-/* 暗色模式下的成功提示样式 */
-.dark-theme .success-message {
-  background: #3a3a3a;
-  border-color: #28a745;
-  color: #6cff6c;
-}
-
-/* 暗色模式下的加载动画样式 */
-.dark-theme .loading-spinner {
-  border-color: #444;
-  border-top-color: var(--primary-color);
-}
-
-/* 暗色模式下的工具提示样式 */
-.dark-theme .tooltip {
-  background: #333;
-  color: #ddd;
-  border-color: #444;
-}
-
-.dark-theme .tooltip::before {
-  border-color: #444 transparent transparent transparent;
-}
-
-/* 暗色模式下的模态框样式 */
-.dark-theme .modal {
-  background: #333;
-  border-color: #444;
-}
-
-.dark-theme .modal-header {
-  border-color: #444;
-}
-
-.dark-theme .modal-title {
-  color: #fff;
-}
-
-.dark-theme .modal-body {
-  color: #ddd;
-}
-
-.dark-theme .modal-footer {
-  border-color: #444;
-}
-
-/* 暗色模式下的标签页样式 */
-.dark-theme .tabs {
-  border-color: #444;
-}
-
-.dark-theme .tab {
-  color: #ddd;
-  border-color: #444;
-}
-
-.dark-theme .tab.active {
-  background: #3a3a3a;
-  color: #fff;
-  border-color: var(--primary-color);
-}
-
-.dark-theme .tab:hover {
-  background: #444;
-}
-
-/* 暗色模式下的地图样式 */
-.dark-theme .map-container {
-  background: #333;
-}
-
-.dark-theme .map-container .map-controls {
-  background: #333;
-  border-color: #444;
-}
-
-.dark-theme .map-container .map-controls button {
-  background: #3a3a3a;
-  border-color: #444;
-  color: #ddd;
-}
-
-.dark-theme .map-container .map-controls button:hover {
-  background: #444;
-  color: #fff;
-}
-
-.dark-theme .map-container .map-controls button:active {
-  background: #333;
-}
-
-.dark-theme .map-container .map-legend {
-  background: #333;
-  border-color: #444;
-  color: #ddd;
-}
-
-.dark-theme .map-container .map-legend .legend-item {
-  border-color: #444;
-}
-
-.dark-theme .map-container .map-legend .legend-color {
-  border-color: #444;
-}
-
-.dark-theme .map-container .map-legend .legend-label {
-  color: #ddd;
-}
-
-/* 暗色模式下的历史记录样式 */
-.dark-theme .history-section {
-  background: #333;
-  border-color: #444;
-}
-
-.dark-theme .history-section h4 {
-  color: #fff;
-  border-color: #444;
-}
-
-.dark-theme .history-list {
-  border-color: #444;
-}
-
-.dark-theme .history-item {
-  border-color: #444;
-  color: #ddd;
-}
-
-.dark-theme .history-item:hover {
-  background: #3a3a3a;
-}
-
-.dark-theme .history-item .history-ip {
-  color: #fff;
-}
-
-.dark-theme .history-item .history-time {
-  color: #aaa;
-}
-
-.dark-theme .history-item .history-actions {
-  color: #aaa;
-}
-
-.dark-theme .history-item:hover .history-actions {
-  color: #fff;
-}
-
-/* 暗色模式下的统计信息样式 */
-.dark-theme .stats-section {
-  background: #333;
-  border-color: #444;
-}
-
-.dark-theme .stats-section h4 {
-  color: #fff;
-  border-color: #444;
-}
-
-.dark-theme .stats-grid {
-  border-color: #444;
-}
-
-.dark-theme .stat-item {
-  border-color: #444;
-  color: #ddd;
-}
-
-.dark-theme .stat-item .stat-label {
-  color: #aaa;
-}
-
-.dark-theme .stat-item .stat-value {
-  color: #fff;
-}
-
-/* 暗色模式下的图表样式 */
-.dark-theme .chart-container {
-  background: #333;
-  border-color: #444;
-}
-
-.dark-theme .chart-container .chart-title {
-  color: #fff;
-}
-
-.dark-theme .chart-container .chart-legend {
-  color: #ddd;
-}
-
-.dark-theme .chart-container .chart-axis {
-  color: #aaa;
-}
-
-.dark-theme .chart-container .chart-grid {
-  stroke: #444;
-}
-
-.dark-theme .chart-container .chart-line {
-  stroke: var(--primary-color);
-}
-
-.dark-theme .chart-container .chart-area {
-  fill: rgba(0, 123, 255, 0.1);
-}
-
-.dark-theme .chart-container .chart-point {
-  fill: var(--primary-color);
-  stroke: #333;
-}
-
-/* 暗色模式下的导出选项样式 */
-.dark-theme .export-options {
-  background: #333;
-  border-color: #444;
-}
-
-.dark-theme .export-options h4 {
-  color: #fff;
-}
-
-.dark-theme .export-options select {
-  background: #2d2d2d;
-  border-color: #444;
-  color: #ddd;
-}
-
-.dark-theme .export-options select:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-}
-
-.dark-theme .export-options button {
-  background: #3a3a3a;
-  border-color: #444;
-  color: #ddd;
-}
-
-.dark-theme .export-options button:hover {
-  background: #444;
-  color: #fff;
-}
-
-.dark-theme .export-options button:active {
-  background: #333;
-}
-</style> 
+@media (max-width: 768px) {
+  .ip-input {
+    flex-direction: column;
+  }
+}
+</style>

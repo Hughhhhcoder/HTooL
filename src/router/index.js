@@ -1,14 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
-import QRCodeTool from '../views/QRCodeTool.vue'
-import MathTool from '../views/MathTool.vue'
-import IPLocation from '../views/IPLocation.vue'
-import DataProcessor from '../views/DataProcessor.vue'
-import DrawingBoard from '../views/DrawingBoard.vue'
-import MarkdownHtmlConverter from '../views/MarkdownHtmlConverter.vue'
-import PomodoroTimer from '../views/PomodoroTimer.vue'
-import ImageConverter from '../views/ImageConverter.vue'
-import MarkdownEditor from '../views/MarkdownEditor.vue'
 
 const routes = [
   {
@@ -19,52 +10,52 @@ const routes = [
   {
     path: '/qrcode',
     name: 'QRCodeTool',
-    component: QRCodeTool
+    component: () => import('../views/QRCodeTool.vue')
   },
   {
     path: '/math',
     name: 'MathTool',
-    component: MathTool
+    component: () => import('../views/MathTool.vue')
   },
   {
     path: '/ip-location',
     name: 'IPLocation',
-    component: IPLocation
+    component: () => import('../views/IPLocation.vue')
   },
   {
     path: '/data-processor',
     name: 'DataProcessor',
-    component: DataProcessor
+    component: () => import('../views/DataProcessor.vue')
   },
   {
     path: '/drawing-board',
     name: 'DrawingBoard',
-    component: DrawingBoard
+    component: () => import('../views/DrawingBoard.vue')
   },
   {
     path: '/markdown-html',
     name: 'MarkdownHtmlConverter',
-    component: MarkdownHtmlConverter
+    component: () => import('../views/MarkdownHtmlConverter.vue')
   },
   {
     path: '/pomodoro',
     name: 'PomodoroTimer',
-    component: PomodoroTimer
+    component: () => import('../views/PomodoroTimer.vue')
   },
   {
     path: '/image-converter',
     name: 'ImageConverter',
-    component: ImageConverter
+    component: () => import('../views/ImageConverter.vue')
   },
   {
     path: '/markdown',
     name: 'MarkdownEditor',
-    component: MarkdownEditor
+    component: () => import('../views/MarkdownEditor.vue')
   }
 ]
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes
 })
 
