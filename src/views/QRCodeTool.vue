@@ -1,84 +1,103 @@
 <template>
-  <div class="qr-code-tool">
-    <h2>二维码生成 / 解析</h2>
-
-    <div class="generate-section">
-      <h3>生成二维码</h3>
-      <div class="input-type-selector">
-        <button
-          v-for="type in inputTypes"
-          :key="type.value"
-          :class="{ active: currentInputType === type.value }"
-          @click="currentInputType = type.value"
-        >
-          {{ type.label }}
-        </button>
+  <section class="page qr-page">
+    <header class="page-header">
+      <div>
+        <p class="page-kicker">Image & Encoding</p>
+        <h1 class="page-title">二维码生成与解析</h1>
+        <p class="page-subtitle">支持文本与链接生成，可上传图片并识别内容类型。</p>
       </div>
+    </header>
 
-      <textarea
-        v-if="currentInputType === 'text'"
-        v-model="textInput"
-        placeholder="输入文本生成二维码"
-      ></textarea>
+    <div class="panel-grid">
+      <section class="panel block">
+        <h2 class="section-title">生成二维码</h2>
+        <p class="section-description">输入文本或 URL，自定义尺寸与色彩后生成下载。</p>
 
-      <input
-        v-if="currentInputType === 'url'"
-        type="url"
-        v-model="urlInput"
-        placeholder="输入链接生成二维码"
-      />
-
-      <div class="style-settings">
-        <div class="setting-item">
-          <label>二维码尺寸:</label>
-          <input type="number" v-model.number="qrSize" min="200" max="800" step="50" />
-          <span>像素</span>
+        <div class="segment">
+          <button
+            v-for="type in inputTypes"
+            :key="type.value"
+            class="btn"
+            :class="{ 'btn-primary': currentInputType === type.value }"
+            @click="currentInputType = type.value"
+          >
+            {{ type.label }}
+          </button>
         </div>
-        <div class="setting-item">
-          <label>前景色:</label>
-          <input type="color" v-model="darkColor" />
-        </div>
-        <div class="setting-item">
-          <label>背景色:</label>
-          <input type="color" v-model="lightColor" />
-        </div>
-        <div class="setting-item">
-          <label>边距:</label>
-          <input type="number" v-model.number="margin" min="0" max="4" step="1" />
-        </div>
-      </div>
 
-      <button @click="generateQRCode" class="primary-button" :disabled="isGenerating">
-        {{ isGenerating ? '生成中...' : '生成二维码' }}
-      </button>
+        <textarea
+          v-if="currentInputType === 'text'"
+          v-model="textInput"
+          placeholder="输入文本生成二维码"
+        ></textarea>
 
-      <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+        <input
+          v-else
+          type="url"
+          v-model="urlInput"
+          placeholder="输入链接生成二维码"
+        />
 
-      <div v-if="qrCodeDataUrl" class="qr-result">
-        <img :src="qrCodeDataUrl" alt="生成的二维码" />
-        <div class="qr-actions">
-          <button @click="downloadQRCode">下载二维码</button>
+        <div class="setting-grid">
+          <label class="setting-item">
+            <span>尺寸</span>
+            <input type="number" v-model.number="qrSize" min="200" max="800" step="50" />
+          </label>
+
+          <label class="setting-item">
+            <span>边距</span>
+            <input type="number" v-model.number="margin" min="0" max="4" step="1" />
+          </label>
+
+          <label class="setting-item">
+            <span>前景色</span>
+            <input type="color" v-model="darkColor" />
+          </label>
+
+          <label class="setting-item">
+            <span>背景色</span>
+            <input type="color" v-model="lightColor" />
+          </label>
         </div>
-      </div>
+
+        <div class="action-row">
+          <button class="btn btn-primary" @click="generateQRCode" :disabled="isGenerating">
+            {{ isGenerating ? '生成中...' : '生成二维码' }}
+          </button>
+          <button class="btn" @click="downloadQRCode" :disabled="!qrCodeDataUrl">下载二维码</button>
+        </div>
+
+        <p v-if="errorMessage" class="status status-error">{{ errorMessage }}</p>
+
+        <div v-if="qrCodeDataUrl" class="qr-result">
+          <img :src="qrCodeDataUrl" alt="生成的二维码" />
+        </div>
+      </section>
+
+      <section class="panel block">
+        <h2 class="section-title">解析二维码</h2>
+        <p class="section-description">拖拽或上传图片，即时识别二维码内容。</p>
+
+        <div class="upload-area" @drop.prevent="handleDrop" @dragover.prevent>
+          <input type="file" @change="handleFileSelect" accept="image/*" ref="fileInput" />
+          <p>点击上传或拖拽图片到此处</p>
+        </div>
+
+        <div v-if="decodedResult" class="decoded panel panel-muted">
+          <p><strong>内容：</strong>{{ decodedResult.text }}</p>
+          <p><strong>类型：</strong>{{ decodedResult.type || '文本' }}</p>
+          <a
+            v-if="isValidUrl(decodedResult.text)"
+            :href="decodedResult.text"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            打开链接
+          </a>
+        </div>
+      </section>
     </div>
-
-    <div class="decode-section">
-      <h3>解析二维码</h3>
-      <div class="upload-area" @drop.prevent="handleDrop" @dragover.prevent>
-        <input type="file" @change="handleFileSelect" accept="image/*" ref="fileInput" />
-        <p>点击上传或拖拽图片到此处</p>
-      </div>
-
-      <div v-if="decodedResult" class="decode-result">
-        <h4>解析结果:</h4>
-        <div class="result-content">
-          <p>{{ decodedResult.text }}</p>
-          <p v-if="decodedResult.type">类型: {{ decodedResult.type }}</p>
-          <a v-if="isValidUrl(decodedResult.text)" :href="decodedResult.text" target="_blank" rel="noopener noreferrer">打开链接</a>
-        </div>
-      </div>
-    </div>
-  </div>
+  </section>
 </template>
 
 <script setup>
@@ -95,8 +114,8 @@ const isGenerating = ref(false)
 const errorMessage = ref('')
 
 const qrSize = ref(400)
-const darkColor = ref('#000000')
-const lightColor = ref('#FFFFFF')
+const darkColor = ref('#111111')
+const lightColor = ref('#ffffff')
 const margin = ref(2)
 
 const inputTypes = [
@@ -112,10 +131,7 @@ const ensureQRCodeDeps = async () => {
     return { QRCode: QRCodeLib, jsQR: jsQRLib }
   }
 
-  const [qrModule, jsqrModule] = await Promise.all([
-    import('qrcode'),
-    import('jsqr')
-  ])
+  const [qrModule, jsqrModule] = await Promise.all([import('qrcode'), import('jsqr')])
 
   QRCodeLib = qrModule.default
   jsQRLib = jsqrModule.default
@@ -223,123 +239,98 @@ const handleFileSelect = (event) => {
 </script>
 
 <style scoped>
-.qr-code-tool {
-  padding: 20px;
-  max-width: 840px;
-  margin: 0 auto;
-}
-
-.generate-section,
-.decode-section {
-  background: var(--bg-color-secondary);
-  border: 1px solid var(--border-color);
-  padding: 20px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-}
-
-.input-type-selector {
+.qr-page {
   display: flex;
-  gap: 10px;
-  margin-bottom: 16px;
+  flex-direction: column;
 }
 
-.input-type-selector button,
-.primary-button,
-.qr-actions button {
-  padding: 8px 14px;
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  background: var(--bg-color);
-  color: var(--text-color);
-  cursor: pointer;
-}
-
-.input-type-selector button.active,
-.primary-button,
-.qr-actions button {
-  background: var(--primary-color);
-  border-color: var(--primary-color);
-  color: #fff;
-}
-
-.input-type-selector button:hover,
-.primary-button:hover,
-.qr-actions button:hover {
-  background: var(--primary-color-dark);
-  color: #fff;
-}
-
-textarea,
-input[type='url'] {
-  width: 100%;
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  padding: 10px;
-  margin-bottom: 10px;
-  background: var(--bg-color);
-  color: var(--text-color);
-}
-
-textarea {
-  min-height: 96px;
-  resize: vertical;
-}
-
-.style-settings {
+.panel-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 12px;
-  margin: 16px 0;
+  gap: var(--space-4);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.block {
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.segment {
+  display: flex;
+  gap: 8px;
+}
+
+.setting-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .setting-item {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.action-row {
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
-.qr-result,
-.decode-result {
-  margin-top: 16px;
-  background: var(--bg-color);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 14px;
+.qr-result {
+  border: 1px solid var(--border-weak);
+  border-radius: var(--radius-md);
+  background: var(--surface-base);
+  padding: var(--space-4);
 }
 
 .qr-result img {
-  max-width: 100%;
   width: min(360px, 100%);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
+  margin: 0 auto;
   display: block;
-  margin: 0 auto 12px;
-}
-
-.qr-actions {
-  display: flex;
-  justify-content: center;
 }
 
 .upload-area {
-  border: 2px dashed var(--border-color);
-  border-radius: 8px;
-  padding: 18px;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface-base);
+  padding: var(--space-6);
   text-align: center;
-  background: var(--bg-color);
 }
 
-.upload-area input[type='file'] {
-  margin-bottom: 8px;
+.upload-area p {
+  margin: 8px 0 0;
+  color: var(--text-secondary);
 }
 
-.result-content {
-  word-break: break-all;
+.decoded {
+  padding: var(--space-4);
+  color: var(--text-secondary);
 }
 
-.error-message {
-  margin-top: 10px;
-  color: #d32f2f;
+.decoded p {
+  margin: 0 0 8px;
+}
+
+.decoded a {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+@media (max-width: 980px) {
+  .panel-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .block {
+    padding: var(--space-4);
+  }
+
+  .setting-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

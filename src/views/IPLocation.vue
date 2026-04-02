@@ -1,67 +1,66 @@
 <template>
-  <div class="ip-location">
-    <h2>IP 地址定位</h2>
+  <section class="page ip-page">
+    <header class="page-header">
+      <div>
+        <p class="page-kicker">System & Data</p>
+        <h1 class="page-title">IP 地址定位</h1>
+        <p class="page-subtitle">输入任意 IPv4 地址，快速获得地域、时区和运营商信息。</p>
+      </div>
+    </header>
 
-    <div class="location-section">
-      <div class="input-section">
-        <div class="ip-input">
-          <input
-            type="text"
-            v-model="ipAddress"
-            placeholder="输入IP地址，例如：8.8.8.8"
-          />
-          <button @click="getCurrentIP" class="secondary-button">获取当前IP</button>
-        </div>
-        <button @click="searchLocation" class="primary-button">查询位置</button>
+    <section class="panel query-panel">
+      <div class="query-row">
+        <input
+          type="text"
+          v-model="ipAddress"
+          placeholder="输入 IP 地址，例如：8.8.8.8"
+        />
+        <button class="btn" @click="getCurrentIP">获取当前 IP</button>
+        <button class="btn btn-primary" @click="searchLocation">查询位置</button>
       </div>
 
-      <div v-if="loading" class="loading">
-        <p>正在查询中...</p>
-      </div>
+      <p v-if="loading" class="status">正在查询中...</p>
+      <p v-if="error" class="status status-error">{{ error }}</p>
 
-      <div v-if="error" class="error-message">
-        <p>{{ error }}</p>
-      </div>
-
-      <div v-if="locationData" class="location-result">
-        <h3>查询结果</h3>
+      <div v-if="locationData" class="result panel panel-muted">
+        <h2 class="section-title">查询结果</h2>
         <div class="result-grid">
           <div class="result-item">
-            <span class="label">IP地址：</span>
-            <span class="value">{{ locationData.ip }}</span>
+            <span class="label">IP 地址</span>
+            <span class="value mono">{{ locationData.ip }}</span>
           </div>
           <div class="result-item">
-            <span class="label">国家：</span>
-            <span class="value">{{ locationData.country }}</span>
+            <span class="label">国家</span>
+            <span class="value">{{ locationData.country || '-' }}</span>
           </div>
           <div class="result-item">
-            <span class="label">地区：</span>
-            <span class="value">{{ locationData.region }}</span>
+            <span class="label">地区</span>
+            <span class="value">{{ locationData.region || '-' }}</span>
           </div>
           <div class="result-item">
-            <span class="label">城市：</span>
-            <span class="value">{{ locationData.city }}</span>
+            <span class="label">城市</span>
+            <span class="value">{{ locationData.city || '-' }}</span>
           </div>
           <div class="result-item">
-            <span class="label">邮政编码：</span>
-            <span class="value">{{ locationData.postal }}</span>
+            <span class="label">邮政编码</span>
+            <span class="value">{{ locationData.postal || '-' }}</span>
           </div>
           <div class="result-item">
-            <span class="label">经纬度：</span>
-            <span class="value">{{ locationData.loc }}</span>
+            <span class="label">经纬度</span>
+            <span class="value mono">{{ locationData.loc || '-' }}</span>
           </div>
           <div class="result-item">
-            <span class="label">时区：</span>
-            <span class="value">{{ locationData.timezone }}</span>
+            <span class="label">时区</span>
+            <span class="value">{{ locationData.timezone || '-' }}</span>
           </div>
           <div class="result-item">
-            <span class="label">运营商：</span>
-            <span class="value">{{ locationData.org }}</span>
+            <span class="label">运营商</span>
+            <span class="value">{{ locationData.org || '-' }}</span>
           </div>
         </div>
       </div>
-    </div>
-  </div>
+    </section>
+  </section>
 </template>
 
 <script setup>
@@ -135,91 +134,33 @@ const searchLocation = async () => {
 </script>
 
 <style scoped>
-.ip-location {
-  padding: 20px;
-  max-width: 840px;
-  margin: 0 auto;
-}
-
-.location-section {
-  background: var(--bg-color-secondary);
-  border: 1px solid var(--border-color);
-  padding: 20px;
-  border-radius: 10px;
-}
-
-.input-section {
+.ip-page {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 20px;
 }
 
-.ip-input {
+.query-panel {
+  padding: var(--space-6);
   display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.query-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   gap: 10px;
 }
 
-.ip-input input {
-  flex: 1;
-  padding: 10px;
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  background: var(--bg-color);
-  color: var(--text-color);
-}
-
-.primary-button,
-.secondary-button {
-  padding: 10px 16px;
-  border: none;
-  border-radius: 6px;
-  color: #fff;
-  cursor: pointer;
-}
-
-.primary-button {
-  background: var(--primary-color);
-}
-
-.secondary-button {
-  background: #6b7280;
-}
-
-.primary-button:hover {
-  background: var(--primary-color-dark);
-}
-
-.secondary-button:hover {
-  background: #4b5563;
-}
-
-.loading {
-  text-align: center;
-  padding: 16px;
-  color: var(--text-secondary);
-}
-
-.error-message {
-  padding: 12px;
-  background: #fdecec;
-  color: #b42318;
-  border-radius: 8px;
-  margin-bottom: 16px;
-}
-
-.location-result {
-  background: var(--bg-color);
-  border: 1px solid var(--border-color);
-  padding: 16px;
-  border-radius: 8px;
+.result {
+  padding: var(--space-5);
 }
 
 .result-grid {
+  margin-top: 14px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   gap: 12px;
-  margin-top: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
 }
 
 .result-item {
@@ -229,18 +170,24 @@ const searchLocation = async () => {
 }
 
 .label {
-  font-weight: 700;
-  color: var(--text-secondary);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
 }
 
 .value {
-  color: var(--text-color);
+  color: var(--text-primary);
   word-break: break-all;
 }
 
-@media (max-width: 768px) {
-  .ip-input {
-    flex-direction: column;
+@media (max-width: 860px) {
+  .query-panel {
+    padding: var(--space-4);
+  }
+
+  .query-row {
+    grid-template-columns: 1fr;
   }
 }
 </style>

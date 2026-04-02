@@ -7,13 +7,15 @@ test('home to markdown editor navigation works', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Markdown 编辑器' })).toBeVisible()
 })
 
+test('removed routes should redirect to home', async ({ page }) => {
+  await page.goto('/math')
+  await expect(page).toHaveURL(/\/$/)
+  await page.goto('/pomodoro')
+  await expect(page).toHaveURL(/\/$/)
+})
+
 test('markdown editor preview flow works', async ({ page }) => {
   await page.goto('/markdown')
-
-  const overlay = page.locator('.overlay.show')
-  if (await overlay.count()) {
-    await overlay.click({ force: true })
-  }
 
   await page.evaluate(() => {
     const editor = document.querySelector('.editor')
@@ -33,8 +35,12 @@ test('qr code generation flow works', async ({ page }) => {
   await expect(page.locator('.qr-result img')).toBeVisible()
 })
 
-test('math formula rendering flow works', async ({ page }) => {
-  await page.goto('/math')
-  await page.locator('textarea').first().fill('c^2 = a^2 + b^2')
-  await expect(page.locator('.formula .katex')).toBeVisible()
+test('home supports light and dark visual captures', async ({ page }) => {
+  await page.goto('/')
+  const lightImage = await page.screenshot({ fullPage: true })
+  expect(lightImage.byteLength).toBeGreaterThan(1000)
+
+  await page.getByRole('button', { name: '切换到暗色模式' }).click()
+  const darkImage = await page.screenshot({ fullPage: true })
+  expect(darkImage.byteLength).toBeGreaterThan(1000)
 })

@@ -1,11 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: () => import('../views/Home.vue')
   },
   {
     path: '/qrcode',
@@ -14,8 +13,7 @@ const routes = [
   },
   {
     path: '/math',
-    name: 'MathTool',
-    component: () => import('../views/MathTool.vue')
+    redirect: '/'
   },
   {
     path: '/ip-location',
@@ -39,8 +37,7 @@ const routes = [
   },
   {
     path: '/pomodoro',
-    name: 'PomodoroTimer',
-    component: () => import('../views/PomodoroTimer.vue')
+    redirect: '/'
   },
   {
     path: '/image-converter',
@@ -51,6 +48,10 @@ const routes = [
     path: '/markdown',
     name: 'MarkdownEditor',
     component: () => import('../views/MarkdownEditor.vue')
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/'
   }
 ]
 
@@ -59,4 +60,4 @@ const router = createRouter({
   routes
 })
 
-export default router 
+export default router

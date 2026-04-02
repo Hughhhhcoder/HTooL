@@ -1,71 +1,72 @@
 <template>
-  <div class="markdown-html-converter">
-    <div class="converter-header">
-      <h2>Markdown ↔ HTML 互转</h2>
+  <section class="page converter-page">
+    <header class="page-header">
+      <div>
+        <p class="page-kicker">Writing</p>
+        <h1 class="page-title">Markdown ↔ HTML 转换</h1>
+        <p class="page-subtitle">双向编辑并实时预览，支持复制与下载输出。</p>
+      </div>
+
       <div class="mode-switch">
-        <button 
-          :class="{ active: previewMode === 'HTML' }"
+        <button
+          class="btn"
+          :class="{ 'btn-primary': previewMode === 'HTML' }"
           @click="previewMode = 'HTML'"
         >
           HTML 预览
         </button>
-        <button 
-          :class="{ active: previewMode === 'Markdown' }"
+        <button
+          class="btn"
+          :class="{ 'btn-primary': previewMode === 'Markdown' }"
           @click="previewMode = 'Markdown'"
         >
           Markdown 预览
         </button>
       </div>
-    </div>
-    
-    <div class="converter-container">
-      <!-- 输入区域 -->
-      <div class="input-section">
-        <div class="input-group">
-          <h3>Markdown 输入</h3>
-          <textarea 
-            v-model="markdownInput" 
-            placeholder="输入 Markdown 文本..."
-            @input="convertToHtml"
-          ></textarea>
-          <button class="action-button" @click="clearInput('markdown')">
-            <i class="fas fa-trash"></i> 清空
-          </button>
-        </div>
-        
-        <div class="input-group">
-          <h3>HTML 输入</h3>
-          <textarea 
-            v-model="htmlInput" 
-            placeholder="输入 HTML 代码..."
-            @input="convertToMarkdown"
-          ></textarea>
-          <button class="action-button" @click="clearInput('html')">
-            <i class="fas fa-trash"></i> 清空
-          </button>
-        </div>
-      </div>
+    </header>
 
-      <!-- 预览区域 -->
-      <div class="preview-section">
-        <div class="preview-header">
-          <h3>预览</h3>
-          <div class="preview-actions">
-            <button class="action-button" @click="copyOutput">
-              <i class="fas fa-copy"></i> 复制
-            </button>
-            <button class="action-button" @click="downloadOutput">
-              <i class="fas fa-download"></i> 下载
-            </button>
+    <div class="layout">
+      <section class="panel block">
+        <h2 class="section-title">输入区</h2>
+        <div class="input-stack">
+          <div class="input-group">
+            <label>Markdown 输入</label>
+            <textarea
+              v-model="markdownInput"
+              placeholder="输入 Markdown 文本..."
+              @input="convertToHtml"
+            ></textarea>
+            <button class="btn" @click="clearInput('markdown')">清空 Markdown</button>
+          </div>
+
+          <div class="input-group">
+            <label>HTML 输入</label>
+            <textarea
+              v-model="htmlInput"
+              placeholder="输入 HTML 代码..."
+              @input="convertToMarkdown"
+            ></textarea>
+            <button class="btn" @click="clearInput('html')">清空 HTML</button>
           </div>
         </div>
-        <div class="preview-content">
-          <div v-if="previewMode === 'HTML'" v-html="htmlOutput" class="preview html-preview"></div>
-          <div v-else class="preview markdown-preview">{{ markdownOutput }}</div>
+      </section>
+
+      <section class="panel block">
+        <div class="preview-header">
+          <h2 class="section-title">预览区</h2>
+          <div class="preview-actions">
+            <button class="btn" @click="copyOutput">复制</button>
+            <button class="btn btn-primary" @click="downloadOutput">下载</button>
+          </div>
         </div>
-      </div>
+
+        <div class="preview-shell">
+          <div v-if="previewMode === 'HTML'" v-html="htmlOutput" class="preview html-preview"></div>
+          <div v-else class="preview markdown-preview mono">{{ markdownOutput }}</div>
+        </div>
+      </section>
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup>
@@ -114,7 +115,7 @@ const convertToHtml = async () => {
     htmlOutput.value = marked(markdownInput.value, markedRenderOptions)
   } catch (error) {
     console.error('Markdown 转换错误:', error)
-    htmlOutput.value = '<div class="error">转换出错，请检查输入内容</div>'
+    htmlOutput.value = '<div class="preview-error">转换出错，请检查输入内容</div>'
   }
 }
 
@@ -181,233 +182,115 @@ watch(htmlInput, () => {
 </script>
 
 <style scoped>
-.markdown-html-converter {
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  min-height: 100vh;
-}
-
-.converter-header {
+.converter-page {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.converter-header h2 {
-  margin: 0;
-  font-size: 1.8rem;
-  color: var(--text-color);
+  flex-direction: column;
 }
 
 .mode-switch {
   display: flex;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.mode-switch button {
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--border-color);
-  background: var(--bg-color);
-  color: var(--text-color);
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.mode-switch button.active {
-  background: var(--primary-color);
-  color: white;
-  border-color: var(--primary-color);
-}
-
-.converter-container {
+.layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
+  gap: var(--space-4);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.input-section {
+.block {
+  padding: var(--space-6);
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--space-4);
+}
+
+.input-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
 }
 
 .input-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-}
-
-.input-group h3 {
-  margin: 0;
-  font-size: 1.2rem;
-  color: var(--text-color);
-}
-
-textarea {
-  width: 100%;
-  min-height: 200px;
-  padding: 1rem;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  background: var(--bg-color);
-  color: var(--text-color);
-  font-family: monospace;
-  resize: vertical;
-  transition: border-color 0.3s ease;
-}
-
-textarea:focus {
-  outline: none;
-  border-color: var(--primary-color);
-}
-
-.action-button {
-  padding: 0.5rem 1rem;
-  background: var(--bg-color);
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: all 0.3s ease;
-}
-
-.action-button:hover {
-  background: var(--primary-color);
-  color: white;
-  border-color: var(--primary-color);
-}
-
-.preview-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  gap: 10px;
 }
 
 .preview-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.preview-header h3 {
-  margin: 0;
-  font-size: 1.2rem;
-  color: var(--text-color);
+  gap: var(--space-4);
 }
 
 .preview-actions {
   display: flex;
-  gap: 0.5rem;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.preview-content {
-  flex: 1;
-  min-height: 200px;
-  padding: 1rem;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  background: var(--bg-color);
+.preview-shell {
+  border: 1px solid var(--border-weak);
+  border-radius: var(--radius-md);
+  background: var(--surface-base);
+  min-height: 320px;
   overflow: auto;
 }
 
 .preview {
-  white-space: pre-wrap;
-  word-wrap: break-word;
+  padding: var(--space-5);
+  color: var(--text-secondary);
 }
 
-.html-preview {
-  font-family: system-ui, -apple-system, sans-serif;
+.html-preview :deep(.preview-error) {
+  color: var(--danger);
 }
 
-.html-preview :deep(h1) {
-  font-size: 2rem;
-  margin: 1rem 0;
-  color: var(--text-color);
-}
-
-.html-preview :deep(h2) {
-  font-size: 1.5rem;
-  margin: 0.8rem 0;
-  color: var(--text-color);
-}
-
-.html-preview :deep(p) {
-  margin: 0.5rem 0;
-  line-height: 1.6;
+.html-preview :deep(h1),
+.html-preview :deep(h2),
+.html-preview :deep(h3) {
+  color: var(--text-primary);
 }
 
 .html-preview :deep(code) {
-  background: var(--code-bg);
-  padding: 0.2rem 0.4rem;
-  border-radius: 4px;
-  font-family: monospace;
+  background: var(--surface-card);
+  border: 1px solid var(--border-weak);
+  padding: 2px 6px;
+  border-radius: 6px;
 }
 
 .html-preview :deep(pre) {
-  background: var(--code-bg);
-  padding: 1rem;
-  border-radius: 8px;
-  overflow-x: auto;
+  background: var(--surface-card);
+  border: 1px solid var(--border-weak);
+  border-radius: var(--radius-sm);
+  padding: var(--space-4);
+  overflow: auto;
 }
 
 .html-preview :deep(blockquote) {
-  border-left: 4px solid var(--primary-color);
-  margin: 1rem 0;
-  padding-left: 1rem;
-  color: var(--text-color-secondary);
-}
-
-.html-preview :deep(ul), 
-.html-preview :deep(ol) {
-  padding-left: 2rem;
-  margin: 0.5rem 0;
-}
-
-.html-preview :deep(table) {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1rem 0;
-}
-
-.html-preview :deep(th),
-.html-preview :deep(td) {
-  border: 1px solid var(--border-color);
-  padding: 0.5rem;
-}
-
-.html-preview :deep(img) {
-  max-width: 100%;
-  height: auto;
+  border-left: 3px solid var(--border-strong);
+  margin: 0;
+  padding-left: 12px;
 }
 
 .markdown-preview {
-  font-family: monospace;
-  white-space: pre;
+  white-space: pre-wrap;
 }
 
-@media (max-width: 768px) {
-  .converter-container {
+@media (max-width: 980px) {
+  .layout {
     grid-template-columns: 1fr;
   }
-  
-  .converter-header {
+
+  .block {
+    padding: var(--space-4);
+  }
+
+  .preview-header {
     flex-direction: column;
-    gap: 1rem;
     align-items: flex-start;
   }
-  
-  .mode-switch {
-    width: 100%;
-  }
-  
-  .mode-switch button {
-    flex: 1;
-  }
 }
-</style> 
+</style>

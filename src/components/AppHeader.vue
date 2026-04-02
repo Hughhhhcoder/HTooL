@@ -1,17 +1,26 @@
 <template>
-  <header class="app-header">
-    <div class="header-content">
-      <div class="logo">
-        <router-link to="/">
-          <i class="fas fa-tools"></i>
-          <span>HTooL</span>
-        </router-link>
-      </div>
-      <div class="header-actions">
-        <button class="theme-toggle" @click="toggleTheme">
-          <i :class="isDark ? 'fas fa-sun' : 'fas fa-moon'"></i>
-        </button>
-      </div>
+  <header class="site-header">
+    <div class="site-header__inner">
+      <router-link to="/" class="brand" aria-label="返回首页">
+        <span class="brand-mark">HT</span>
+        <span class="brand-text">
+          <strong>HTooL</strong>
+          <small>Editorial Utility Suite</small>
+        </span>
+      </router-link>
+
+      <nav class="top-nav" aria-label="主导航">
+        <router-link to="/" class="nav-link">工具画廊</router-link>
+      </nav>
+
+      <button
+        class="btn theme-button"
+        type="button"
+        :aria-label="isDark ? '切换到浅色模式' : '切换到暗色模式'"
+        @click="toggleTheme"
+      >
+        {{ isDark ? '浅色' : '暗色' }}
+      </button>
     </div>
   </header>
 </template>
@@ -21,111 +30,125 @@ import { ref, onMounted } from 'vue'
 
 const isDark = ref(false)
 
+const applyTheme = () => {
+  document.documentElement.classList.toggle('dark-theme', isDark.value)
+  localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
+}
+
 const toggleTheme = () => {
   isDark.value = !isDark.value
-  document.documentElement.classList.toggle('dark-theme')
-  localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
+  applyTheme()
 }
 
 onMounted(() => {
   const savedTheme = localStorage.getItem('theme')
   if (savedTheme === 'dark') {
     isDark.value = true
-    document.documentElement.classList.add('dark-theme')
+  } else if (!savedTheme) {
+    isDark.value = window.matchMedia('(prefers-color-scheme: dark)').matches
   }
+
+  applyTheme()
 })
 </script>
 
 <style scoped>
-.app-header {
-  background: var(--bg-color);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.site-header {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
+  inset: 0 0 auto 0;
+  z-index: 1200;
+  border-bottom: 1px solid var(--border-weak);
+  background: color-mix(in srgb, var(--surface-base) 92%, transparent);
+  backdrop-filter: blur(8px);
 }
 
-.header-content {
-  max-width: 1200px;
+.site-header__inner {
+  width: min(1120px, 100%);
   margin: 0 auto;
-  padding: 0 20px;
-  height: 60px;
+  min-height: 68px;
+  padding: 10px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-4);
 }
 
-.logo a {
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--border-strong);
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.brand-text {
+  display: inline-flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.brand-text strong {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.brand-text small {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.top-nav {
   display: flex;
   align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  color: var(--text-color);
-  font-size: 20px;
-  font-weight: bold;
+  gap: 8px;
 }
 
-.logo i {
-  font-size: 24px;
-  color: var(--primary-color);
-}
-
-.theme-toggle {
-  background: var(--bg-color);
-  border: 1px solid var(--border-color);
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
+.nav-link {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  color: var(--text-color);
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  color: var(--text-secondary);
+  font-size: 0.86rem;
+  transition: border-color var(--duration-fast) var(--easing-standard),
+    background-color var(--duration-fast) var(--easing-standard),
+    color var(--duration-fast) var(--easing-standard);
 }
 
-.theme-toggle:hover {
-  background: var(--primary-color);
-  color: white;
-  transform: scale(1.05);
+.nav-link:hover,
+.nav-link.router-link-active {
+  border-color: var(--border-weak);
+  color: var(--text-primary);
+  background: var(--surface-muted);
 }
 
-.theme-toggle:active {
-  transform: scale(0.95);
+.theme-button {
+  min-width: 82px;
 }
 
-/* 暗色模式支持 */
-.dark-theme .app-header {
-  background: #2d2d2d;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.dark-theme .theme-toggle {
-  background: #333;
-  border-color: #444;
-  color: #fff;
-}
-
-.dark-theme .theme-toggle:hover {
-  background: var(--primary-color);
-  color: white;
-}
-
-/* 移动端适配 */
-@media (max-width: 768px) {
-  .header-content {
-    padding: 0 15px;
+@media (max-width: 860px) {
+  .site-header__inner {
+    min-height: 60px;
+    padding: 10px 14px;
   }
 
-  .logo span {
-    font-size: 18px;
-  }
-
-  .theme-toggle {
-    width: 36px;
-    height: 36px;
+  .brand-text small,
+  .top-nav {
+    display: none;
   }
 }
-</style> 
+</style>

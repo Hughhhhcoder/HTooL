@@ -1,132 +1,122 @@
 <template>
-  <div class="image-converter">
-    <div class="converter-header">
-      <button class="back-btn" @click="goBack">
-        <i class="fas fa-arrow-left"></i> 返回
-      </button>
-      <h2>图片格式转换</h2>
-      <div class="converter-actions">
-        <button class="btn" @click="selectFiles" :disabled="isConverting">
-          <i class="fas fa-folder-open"></i> 选择文件
+  <section class="page image-page">
+    <header class="page-header">
+      <div>
+        <p class="page-kicker">Image & Encoding</p>
+        <h1 class="page-title">图片格式转换</h1>
+        <p class="page-subtitle">支持批量转换、质量调节与分批下载，适配常见图片格式。</p>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn" @click="goBack">返回画廊</button>
+        <button class="btn" @click="selectFiles" :disabled="isConverting">选择文件</button>
+        <button class="btn" @click="clearFiles" :disabled="!files.length || isConverting">清空</button>
+        <button class="btn btn-primary" @click="convertAll" :disabled="!files.length || isConverting">
+          转换全部
         </button>
-        <button class="btn" @click="clearFiles" :disabled="!files.length || isConverting">
-          <i class="fas fa-trash"></i> 清空
+        <button class="btn btn-primary" @click="downloadAll" :disabled="!convertedFiles.length">
+          下载全部
         </button>
-        <div class="batch-settings" v-if="files.length">
-          <div class="format-settings">
+      </div>
+    </header>
+
+    <section class="panel control-panel" v-if="files.length">
+      <h2 class="section-title">批量设置</h2>
+      <div class="batch-row">
+        <label>
+          输出格式
+          <select v-model="batchFormat" @change="applyBatchFormat" :disabled="isConverting">
+            <option value="">选择格式...</option>
+            <option value="png">PNG</option>
+            <option value="jpg">JPG</option>
+            <option value="webp">WebP</option>
+            <option value="gif">GIF</option>
+          </select>
+        </label>
+
+        <label v-if="batchFormat && batchFormat !== 'gif'">
+          质量 {{ batchQuality }}%
+          <input
+            type="range"
+            v-model.number="batchQuality"
+            min="1"
+            max="100"
+            @change="applyBatchQuality"
+            :disabled="isConverting"
+          />
+        </label>
+      </div>
+    </section>
+
+    <section class="panel files-panel" v-if="files.length">
+      <h2 class="section-title">待转换文件</h2>
+
+      <div class="file-list">
+        <article class="file-item" v-for="(file, index) in files" :key="index">
+          <div class="file-head">
+            <p class="file-name">{{ file.name }}</p>
+            <span class="file-size">{{ formatFileSize(file.size) }}</span>
+          </div>
+
+          <div class="file-controls">
             <label>
-              批量设置格式:
-              <select v-model="batchFormat" @change="applyBatchFormat" :disabled="isConverting">
-                <option value="">选择格式...</option>
+              格式
+              <select v-model="file.targetFormat" :disabled="isConverting">
                 <option value="png">PNG</option>
                 <option value="jpg">JPG</option>
                 <option value="webp">WebP</option>
                 <option value="gif">GIF</option>
               </select>
             </label>
-            <label v-if="batchFormat && batchFormat !== 'gif'">
-              批量设置质量:
-              <input 
-                type="range" 
-                v-model="batchQuality" 
-                @change="applyBatchQuality"
-                min="1" 
-                max="100" 
-                :disabled="isConverting"
-              />
-              <span>{{ batchQuality }}%</span>
+
+            <label v-if="file.targetFormat !== 'gif'">
+              质量 {{ file.quality }}%
+              <input type="range" v-model.number="file.quality" min="1" max="100" :disabled="isConverting" />
             </label>
           </div>
-        </div>
-        <button class="btn" @click="convertAll" :disabled="!files.length || isConverting">
-          <i class="fas fa-exchange-alt"></i> 转换全部
-        </button>
-        <button class="btn" @click="downloadAll" :disabled="!convertedFiles.length">
-          <i class="fas fa-download"></i> 下载全部
-        </button>
-      </div>
-    </div>
 
-    <div class="converter-content">
-      <div class="file-list" v-if="files.length">
-        <div class="file-item" v-for="(file, index) in files" :key="index">
-          <div class="file-info">
-            <i class="fas" :class="getFileIcon(file.type)"></i>
-            <span class="file-name">{{ file.name }}</span>
-            <span class="file-size">{{ formatFileSize(file.size) }}</span>
+          <div class="row-actions">
+            <button class="btn btn-primary" @click="convertFile(file)" :disabled="isConverting">转换</button>
+            <button class="btn btn-danger" @click="removeFile(index)" :disabled="isConverting">删除</button>
           </div>
-          <div class="file-actions">
-            <select v-model="file.targetFormat" :disabled="isConverting">
-              <option value="png">PNG</option>
-              <option value="jpg">JPG</option>
-              <option value="webp">WebP</option>
-              <option value="gif">GIF</option>
-            </select>
-            <div class="compression-options" v-if="file.targetFormat !== 'gif'">
-              <label>
-                压缩质量:
-                <input 
-                  type="range" 
-                  v-model="file.quality" 
-                  min="1" 
-                  max="100" 
-                  :disabled="isConverting"
-                />
-                <span>{{ file.quality }}%</span>
-              </label>
-            </div>
-            <button class="btn" @click="convertFile(file)" :disabled="isConverting">
-              <i class="fas fa-exchange-alt"></i> 转换
-            </button>
-            <button class="btn" @click="removeFile(index)" :disabled="isConverting">
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-          <div class="conversion-progress" v-if="file.converting">
-            <div class="progress-bar" :style="{ width: file.progress + '%' }"></div>
+
+          <div class="progress" v-if="file.converting">
+            <div class="progress-bar" :style="{ width: `${file.progress}%` }"></div>
             <span class="progress-text">{{ file.progress }}%</span>
           </div>
-        </div>
+        </article>
       </div>
+    </section>
 
-      <div class="drop-zone" v-else @dragover.prevent @drop.prevent="handleDrop">
-        <i class="fas fa-cloud-upload-alt"></i>
-        <p>拖放图片到这里或点击选择文件</p>
-        <p class="hint">支持 PNG、JPG、WebP、GIF 格式</p>
-      </div>
+    <section class="panel empty-panel" v-else @dragover.prevent @drop.prevent="handleDrop" @click="selectFiles">
+      <h2 class="section-title">拖拽上传</h2>
+      <p class="section-description">拖放图片到这里，或点击面板选择文件。</p>
+      <p class="hint">支持 PNG、JPG、WebP、GIF</p>
+    </section>
 
-      <div class="converted-files" v-if="convertedFiles.length">
-        <h3>已转换文件</h3>
-        <div class="file-list">
-          <div class="file-item" v-for="(file, index) in convertedFiles" :key="index">
-            <div class="file-info">
-              <i class="fas" :class="getFileIcon(file.type)"></i>
-              <span class="file-name">{{ file.name }}</span>
-              <span class="file-size">{{ formatFileSize(file.size) }}</span>
-            </div>
-            <div class="file-actions">
-              <button class="btn" @click="downloadFile(file)">
-                <i class="fas fa-download"></i> 下载
-              </button>
-              <button class="btn" @click="removeConvertedFile(index)">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
+    <section class="panel result-panel" v-if="convertedFiles.length">
+      <h2 class="section-title">已转换文件</h2>
+
+      <div class="file-list">
+        <article class="file-item" v-for="(file, index) in convertedFiles" :key="`converted-${index}`">
+          <div class="file-head">
+            <p class="file-name">{{ file.name }}</p>
+            <span class="file-size">{{ formatFileSize(file.size) }}</span>
           </div>
-        </div>
+          <div class="row-actions">
+            <button class="btn btn-primary" @click="downloadFile(file)">下载</button>
+            <button class="btn btn-danger" @click="removeConvertedFile(index)">移除</button>
+          </div>
+        </article>
       </div>
-    </div>
-  </div>
+    </section>
+  </section>
 </template>
 
 <script setup>
 import { ref, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import {
-  buildConvertedFileName,
-  normalizeQuality,
-  toMimeType
-} from '../utils/imageConverter'
+import { buildConvertedFileName, normalizeQuality, toMimeType } from '../utils/imageConverter'
 
 const router = useRouter()
 const isConverting = ref(false)
@@ -142,7 +132,7 @@ const goBack = () => {
 
 const handleDrop = (e) => {
   const newFiles = Array.from(e.dataTransfer.files)
-  newFiles.forEach(file => {
+  newFiles.forEach((file) => {
     if (file.type.startsWith('image/')) {
       initFileDefaults(file)
       files.value.push(file)
@@ -162,7 +152,7 @@ const initFileDefaults = (file) => {
   file.targetFormat = 'png'
   file.converting = false
   file.progress = 0
-  file.quality = 80 // 默认压缩质量
+  file.quality = 80
 }
 
 const convertImage = (file, targetFormat, quality) => {
@@ -182,20 +172,23 @@ const convertImage = (file, targetFormat, quality) => {
         const ctx = canvas.getContext('2d')
         ctx.drawImage(img, 0, 0)
 
-        // 设置压缩选项
         const normalizedQuality = normalizeQuality(quality)
         const mimeType = toMimeType(targetFormat)
 
-        canvas.toBlob((blob) => {
-          if (!blob) {
-            reject(new Error('转换失败'))
-            return
-          }
-          const newFile = new File([blob], buildConvertedFileName(file.name, targetFormat), {
-            type: mimeType
-          })
-          resolve(newFile)
-        }, mimeType, normalizedQuality)
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) {
+              reject(new Error('转换失败'))
+              return
+            }
+            const newFile = new File([blob], buildConvertedFileName(file.name, targetFormat), {
+              type: mimeType
+            })
+            resolve(newFile)
+          },
+          mimeType,
+          normalizedQuality
+        )
       }
       img.onerror = () => reject(new Error('图片加载失败'))
       img.src = e.target.result
@@ -205,20 +198,6 @@ const convertImage = (file, targetFormat, quality) => {
   })
 }
 
-// 获取文件图标
-const getFileIcon = (type) => {
-  if (!type) return 'fa-file'
-  const icons = {
-    'image/png': 'fa-file-image',
-    'image/jpeg': 'fa-file-image',
-    'image/jpg': 'fa-file-image',
-    'image/webp': 'fa-file-image',
-    'image/gif': 'fa-file-image'
-  }
-  return icons[type.toLowerCase()] || 'fa-file'
-}
-
-// 选择文件
 const selectFiles = () => {
   const input = document.createElement('input')
   input.type = 'file'
@@ -226,7 +205,7 @@ const selectFiles = () => {
   input.accept = 'image/*'
   input.onchange = (e) => {
     const newFiles = Array.from(e.target.files)
-    newFiles.forEach(file => {
+    newFiles.forEach((file) => {
       if (file.type.startsWith('image/')) {
         initFileDefaults(file)
         files.value.push(file)
@@ -236,32 +215,27 @@ const selectFiles = () => {
   input.click()
 }
 
-// 移除文件
 const removeFile = (index) => {
   files.value.splice(index, 1)
 }
 
-// 移除已转换文件
 const removeConvertedFile = (index) => {
   convertedFiles.value.splice(index, 1)
 }
 
-// 清空文件
 const clearFiles = () => {
   files.value = []
   convertedFiles.value = []
 }
 
-// 转换单个文件
 const convertFile = async (file) => {
   if (!file || !file.type.startsWith('image/')) {
-    console.error('无效的文件类型')
     return
   }
 
   file.converting = true
   file.progress = 0
-  
+
   try {
     const result = await convertImage(file, file.targetFormat, file.quality)
     if (result) {
@@ -275,17 +249,15 @@ const convertFile = async (file) => {
   }
 }
 
-// 转换所有文件
 const convertAll = async () => {
   isConverting.value = true
 
   try {
-    // 使用 Promise.all 并行处理所有文件
     const conversionPromises = files.value.map(async (file) => {
       if (!file.converting) {
         file.converting = true
         file.progress = 0
-        
+
         try {
           const result = await convertImage(file, file.targetFormat, file.quality)
           file.progress = 100
@@ -300,11 +272,8 @@ const convertAll = async () => {
       return null
     })
 
-    // 等待所有转换完成并过滤掉失败的结果
     const results = await Promise.all(conversionPromises)
-    const successfulResults = results.filter(result => result !== null)
-    
-    // 将新转换的文件添加到已转换文件列表中
+    const successfulResults = results.filter((result) => result !== null)
     convertedFiles.value = [...convertedFiles.value, ...successfulResults]
   } catch (error) {
     console.error('批量转换失败:', error)
@@ -313,7 +282,6 @@ const convertAll = async () => {
   }
 }
 
-// 下载单个文件
 const downloadFile = (file) => {
   if (!file) return
 
@@ -331,24 +299,21 @@ const downloadFile = (file) => {
   }
 }
 
-// 下载所有文件
 const downloadAll = () => {
-  // 使用 setTimeout 来分批下载文件，避免浏览器限制
   const batchSize = 5
   const totalFiles = convertedFiles.value.length
-  
+
   const downloadBatch = (startIndex) => {
     const endIndex = Math.min(startIndex + batchSize, totalFiles)
-    
-    for (let i = startIndex; i < endIndex; i++) {
+
+    for (let i = startIndex; i < endIndex; i += 1) {
       const file = convertedFiles.value[i]
       if (file) {
         downloadFile(file)
       }
     }
-    
+
     if (endIndex < totalFiles) {
-      // 如果还有文件未下载，等待一段时间后继续下载下一批
       const timeoutId = setTimeout(() => {
         downloadTimeouts.delete(timeoutId)
         downloadBatch(endIndex)
@@ -356,22 +321,19 @@ const downloadAll = () => {
       downloadTimeouts.add(timeoutId)
     }
   }
-  
-  // 开始下载第一批
+
   downloadBatch(0)
 }
 
-// 应用批量格式设置
 const applyBatchFormat = () => {
   if (!batchFormat.value) return
-  files.value.forEach(file => {
+  files.value.forEach((file) => {
     file.targetFormat = batchFormat.value
   })
 }
 
-// 应用批量质量设置
 const applyBatchQuality = () => {
-  files.value.forEach(file => {
+  files.value.forEach((file) => {
     if (file.targetFormat !== 'gif') {
       file.quality = batchQuality.value
     }
@@ -385,264 +347,125 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.image-converter {
-  height: 100vh;
+.image-page {
   display: flex;
   flex-direction: column;
-  background-color: #f5f5f5;
+  gap: var(--space-4);
 }
 
-.converter-header {
-  padding: 10px;
-  background-color: white;
-  border-bottom: 1px solid #ddd;
+.header-actions {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.back-btn {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: white;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  color: #333;
+.control-panel,
+.files-panel,
+.result-panel,
+.empty-panel {
+  padding: var(--space-6);
 }
 
-.back-btn:hover {
-  background-color: #f8f9fa;
-  color: #000;
-}
-
-.converter-content {
-  flex: 1;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+.batch-row {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
 }
 
 .file-list {
+  margin-top: 12px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .file-item {
-  display: flex;
-  flex-direction: column;
-  padding: 15px;
-  background: var(--bg-color);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  transition: all 0.3s;
+  border: 1px solid var(--border-weak);
+  border-radius: var(--radius-md);
+  background: var(--surface-base);
+  padding: var(--space-4);
 }
 
-.file-item:hover {
-  border-color: var(--primary-color);
-  transform: translateX(4px);
-}
-
-.file-info {
+.file-head {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  justify-content: space-between;
+  gap: 12px;
   margin-bottom: 10px;
 }
 
 .file-name {
-  flex: 1;
+  margin: 0;
+  color: var(--text-primary);
+  font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .file-size {
-  color: var(--text-secondary);
-  font-size: 0.9em;
+  color: var(--text-tertiary);
+  font-size: 0.85rem;
+  white-space: nowrap;
 }
 
-.file-actions {
-  display: flex;
+.file-controls {
+  display: grid;
   gap: 10px;
-  align-items: center;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.conversion-progress {
+.row-actions {
   margin-top: 10px;
-  height: 4px;
-  background: var(--border-color);
-  border-radius: 2px;
-  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.progress {
+  margin-top: 12px;
   position: relative;
+  border-radius: 999px;
+  border: 1px solid var(--border-weak);
+  overflow: hidden;
+  height: 10px;
 }
 
 .progress-bar {
   height: 100%;
-  background: var(--primary-color);
-  transition: width 0.3s;
+  background: var(--accent);
 }
 
 .progress-text {
-  position: absolute;
-  right: 0;
-  top: -20px;
-  font-size: 0.8em;
-  color: var(--text-secondary);
+  margin-top: 8px;
+  display: inline-block;
+  color: var(--text-tertiary);
+  font-size: 0.82rem;
 }
 
-.drop-zone {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
-  border: 2px dashed var(--border-color);
-  border-radius: 8px;
-  background: var(--bg-color);
+.empty-panel {
+  text-align: center;
+  border-style: dashed;
   cursor: pointer;
-  transition: all 0.3s;
-}
-
-.drop-zone:hover {
-  border-color: var(--primary-color);
-  background: var(--hover-color);
-}
-
-.drop-zone i {
-  font-size: 48px;
-  color: var(--primary-color);
-  margin-bottom: 20px;
 }
 
 .hint {
-  color: var(--text-secondary);
-  font-size: 0.9em;
-  margin-top: 10px;
+  margin-top: 8px;
+  color: var(--text-tertiary);
+  font-size: 0.86rem;
 }
 
-.converted-files {
-  margin-top: 30px;
-}
-
-.converted-files h3 {
-  margin-bottom: 15px;
-  color: var(--text-primary);
-}
-
-/* 暗色模式适配 */
-.dark-theme .file-item {
-  background: var(--bg-color);
-  border-color: var(--border-color);
-}
-
-.dark-theme .drop-zone {
-  background: var(--bg-color);
-  border-color: var(--border-color);
-}
-
-/* 移动端适配 */
-@media (max-width: 768px) {
-  .converter-header {
-    flex-direction: column;
-    gap: 15px;
+@media (max-width: 980px) {
+  .control-panel,
+  .files-panel,
+  .result-panel,
+  .empty-panel {
+    padding: var(--space-4);
   }
 
-  .converter-actions {
-    width: 100%;
-    flex-wrap: wrap;
-  }
-
-  .file-actions {
-    flex-wrap: wrap;
-  }
-
-  .file-info {
-    flex-wrap: wrap;
+  .batch-row,
+  .file-controls {
+    grid-template-columns: 1fr;
   }
 }
-
-.compression-options {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 10px 0;
-}
-
-.compression-options label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: var(--text-secondary);
-}
-
-.compression-options input[type="range"] {
-  width: 100px;
-  margin: 0;
-}
-
-.batch-settings {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 10px;
-  background-color: var(--bg-color);
-  border-radius: 4px;
-  border: 1px solid var(--border-color);
-}
-
-.format-settings {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.format-settings label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: var(--text-secondary);
-  white-space: nowrap;
-}
-
-.format-settings select {
-  padding: 4px 8px;
-  border-radius: 4px;
-  border: 1px solid var(--border-color);
-  background-color: var(--bg-color);
-  color: var(--text-primary);
-}
-
-.format-settings input[type="range"] {
-  width: 100px;
-  margin: 0;
-}
-
-@media (max-width: 768px) {
-  .batch-settings {
-    width: 100%;
-  }
-  
-  .format-settings {
-    flex-direction: column;
-    align-items: stretch;
-    width: 100%;
-  }
-
-  .format-settings label {
-    justify-content: space-between;
-  }
-
-  .format-settings select,
-  .format-settings input[type="range"] {
-    width: 150px;
-  }
-}
-</style> 
+</style>

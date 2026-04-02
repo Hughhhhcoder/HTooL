@@ -19,12 +19,6 @@ export default defineConfig({
           }
 
           if (
-            id.includes('/katex/')
-          ) {
-            return 'math'
-          }
-
-          if (
             id.includes('/qrcode/') ||
             id.includes('/jsqr/') ||
             id.includes('/dijkstrajs/')
@@ -41,7 +35,7 @@ export default defineConfig({
           }
 
           if (id.includes('/crypto-js/')) {
-            return 'crypto'
+            return 'image'
           }
         }
       }

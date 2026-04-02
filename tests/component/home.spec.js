@@ -18,4 +18,10 @@ describe('Home view', () => {
     await cards[0].trigger('click')
     expect(pushMock).toHaveBeenCalledWith('/markdown')
   })
+
+  it('should not render removed tools', () => {
+    const wrapper = mount(Home)
+    expect(wrapper.text()).not.toContain('数学工具')
+    expect(wrapper.text()).not.toContain('番茄钟')
+  })
 })

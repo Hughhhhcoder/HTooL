@@ -1,285 +1,230 @@
 <template>
-  <div class="drawing-board">
-    <div class="controls">
-      <div class="control-group">
-        <label for="colorPicker">画笔颜色:</label>
-        <input type="color" id="colorPicker" v-model="penColor" />
+  <section class="page drawing-page">
+    <header class="page-header">
+      <div>
+        <p class="page-kicker">Image & Encoding</p>
+        <h1 class="page-title">手绘板</h1>
+        <p class="page-subtitle">轻量草图画布，支持触控、橡皮擦和 PNG 导出。</p>
       </div>
-      <div class="control-group">
-        <label for="penSize">画笔大小:</label>
-        <input type="range" id="penSize" v-model="penSize" min="1" max="50" />
-        <span>{{ penSize }}px</span>
+    </header>
+
+    <section class="panel controls-panel">
+      <div class="controls">
+        <label class="control-item">
+          <span>画笔颜色</span>
+          <input type="color" v-model="penColor" />
+        </label>
+
+        <label class="control-item">
+          <span>画笔大小 {{ penSize }}px</span>
+          <input type="range" v-model.number="penSize" min="1" max="50" />
+        </label>
+
+        <div class="control-actions">
+          <button class="btn" :class="{ 'btn-primary': isEraser }" @click="setEraser">
+            {{ isEraser ? '正在使用橡皮擦' : '切换橡皮擦' }}
+          </button>
+          <button class="btn" @click="clearCanvas">清空画布</button>
+          <button class="btn btn-primary" @click="saveDrawing">保存 PNG</button>
+        </div>
       </div>
-      <div class="control-group">
-        <button @click="setEraser" :class="{ active: isEraser }">橡皮擦</button>
-        <button @click="clearCanvas">清空画布</button>
+
+      <div class="canvas-shell">
+        <canvas
+          ref="canvas"
+          @mousedown="startDrawing"
+          @mousemove="draw"
+          @mouseup="stopDrawing"
+          @mouseleave="stopDrawing"
+          @touchstart.prevent="startDrawingTouch"
+          @touchmove.prevent="drawTouch"
+          @touchend.prevent="stopDrawing"
+        ></canvas>
       </div>
-    </div>
-    <div class="canvas-container">
-      <canvas 
-        ref="canvas" 
-        :width="canvasWidth" 
-        :height="canvasHeight" 
-        @mousedown="startDrawing" 
-        @mousemove="draw" 
-        @mouseup="stopDrawing" 
-        @mouseleave="stopDrawing"
-        @touchstart.prevent="startDrawingTouch" 
-        @touchmove.prevent="drawTouch" 
-        @touchend.prevent="stopDrawing"
-      ></canvas>
-    </div>
-    <div class="actions">
-      <button @click="saveDrawing" class="save-button">
-        <i class="fas fa-save"></i> 保存绘图
-      </button>
-    </div>
-  </div>
+    </section>
+  </section>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 
-const canvas = ref(null);
-let context = null;
-let isDrawing = false;
-let lastX = 0;
-let lastY = 0;
-const penColor = ref('#000000');
-const penSize = ref(2);
-const isEraser = ref(false);
-const canvasWidth = ref(window.innerWidth * 0.8);
-const canvasHeight = ref(window.innerHeight * 0.6);
+const canvas = ref(null)
+const penColor = ref('#111111')
+const penSize = ref(2)
+const isEraser = ref(false)
 
-// 获取设备像素比
-const getDevicePixelRatio = () => {
-  return window.devicePixelRatio || 1;
-};
+let context = null
+let isDrawing = false
+let dpr = 1
 
-// 初始化画布
-const initCanvas = () => {
-  const dpr = getDevicePixelRatio();
-  const rect = canvas.value.getBoundingClientRect();
-  
-  // 设置画布实际大小
-  canvas.value.width = rect.width * dpr;
-  canvas.value.height = rect.height * dpr;
-  
-  // 设置画布显示大小
-  canvas.value.style.width = `${rect.width}px`;
-  canvas.value.style.height = `${rect.height}px`;
-  
-  context = canvas.value.getContext('2d');
-  context.scale(dpr, dpr);
-  context.lineCap = 'round';
-  context.lineJoin = 'round';
-  context.lineWidth = penSize.value;
-  context.strokeStyle = penColor.value;
-};
-
-// 获取画布坐标
 const getCanvasCoordinates = (event) => {
-  const rect = canvas.value.getBoundingClientRect();
-  
+  const rect = canvas.value.getBoundingClientRect()
+
   if (event.type.includes('touch')) {
     return {
       x: event.touches[0].clientX - rect.left,
       y: event.touches[0].clientY - rect.top
-    };
-  } else {
-    return {
-      x: event.offsetX,
-      y: event.offsetY
-    };
+    }
   }
-};
+
+  return {
+    x: event.clientX - rect.left,
+    y: event.clientY - rect.top
+  }
+}
+
+const resizeCanvas = () => {
+  if (!canvas.value) return
+
+  dpr = window.devicePixelRatio || 1
+  const parent = canvas.value.parentElement
+  const width = parent.clientWidth
+  const height = Math.max(320, Math.min(window.innerHeight * 0.62, 700))
+
+  canvas.value.style.width = `${width}px`
+  canvas.value.style.height = `${height}px`
+  canvas.value.width = Math.floor(width * dpr)
+  canvas.value.height = Math.floor(height * dpr)
+
+  context = canvas.value.getContext('2d')
+  context.setTransform(dpr, 0, 0, dpr, 0, 0)
+  context.lineCap = 'round'
+  context.lineJoin = 'round'
+  context.lineWidth = penSize.value
+  context.strokeStyle = penColor.value
+}
 
 const startDrawing = (event) => {
-  isDrawing = true;
-  const coords = getCanvasCoordinates(event);
-  lastX = coords.x;
-  lastY = coords.y;
-  context.beginPath();
-  context.moveTo(lastX, lastY);
-};
+  if (!context) return
+  isDrawing = true
+  const point = getCanvasCoordinates(event)
+  context.beginPath()
+  context.moveTo(point.x, point.y)
+}
 
 const draw = (event) => {
-  if (!isDrawing) return;
-  
-  const coords = getCanvasCoordinates(event);
-  context.lineWidth = isEraser.value ? penSize.value * 2 : penSize.value;
-  context.strokeStyle = isEraser.value ? '#FFFFFF' : penColor.value;
-  context.globalCompositeOperation = isEraser.value ? 'destination-out' : 'source-over';
-  
-  context.lineTo(coords.x, coords.y);
-  context.stroke();
-  
-  lastX = coords.x;
-  lastY = coords.y;
-};
+  if (!isDrawing || !context) return
+
+  const point = getCanvasCoordinates(event)
+  context.lineWidth = isEraser.value ? penSize.value * 2 : penSize.value
+  context.strokeStyle = penColor.value
+  context.globalCompositeOperation = isEraser.value ? 'destination-out' : 'source-over'
+  context.lineTo(point.x, point.y)
+  context.stroke()
+}
 
 const startDrawingTouch = (event) => {
-  event.preventDefault();
-  startDrawing(event);
-};
+  startDrawing(event)
+}
 
 const drawTouch = (event) => {
-  event.preventDefault();
-  draw(event);
-};
+  draw(event)
+}
 
 const stopDrawing = () => {
-  isDrawing = false;
-  context.closePath();
-};
+  if (!context) return
+  isDrawing = false
+  context.closePath()
+}
 
 const setEraser = () => {
-  isEraser.value = !isEraser.value;
-};
+  isEraser.value = !isEraser.value
+}
 
 const clearCanvas = () => {
-  context.clearRect(0, 0, canvas.value.width, canvas.value.height);
-};
+  if (!context || !canvas.value) return
+  context.clearRect(0, 0, canvas.value.width / dpr, canvas.value.height / dpr)
+}
 
 const saveDrawing = () => {
-  const link = document.createElement('a');
-  link.download = 'drawing.png';
-  link.href = canvas.value.toDataURL('image/png');
-  link.click();
-};
+  if (!canvas.value) return
+  const link = document.createElement('a')
+  link.download = 'drawing.png'
+  link.href = canvas.value.toDataURL('image/png')
+  link.click()
+}
 
-// 监听窗口大小变化
-const handleResize = () => {
-  canvasWidth.value = window.innerWidth * 0.8;
-  canvasHeight.value = window.innerHeight * 0.6;
-  initCanvas();
-};
+watch(penColor, (nextColor) => {
+  if (context) {
+    context.strokeStyle = nextColor
+  }
+})
+
+watch(penSize, (nextSize) => {
+  if (context) {
+    context.lineWidth = nextSize
+  }
+})
 
 onMounted(() => {
-  initCanvas();
-  window.addEventListener('resize', handleResize);
-});
+  resizeCanvas()
+  window.addEventListener('resize', resizeCanvas)
+})
 
 onUnmounted(() => {
-  window.removeEventListener('resize', handleResize);
-});
+  window.removeEventListener('resize', resizeCanvas)
+})
 </script>
 
 <style scoped>
-.drawing-board {
+.drawing-page {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 2rem;
-  min-height: 100vh;
-  background: var(--bg-color);
+}
+
+.controls-panel {
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
 }
 
 .controls {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  padding: 1rem;
-  background: var(--bg-color-secondary);
-  border-radius: 8px;
-  width: 100%;
-  max-width: 800px;
-}
-
-.control-group {
-  display: flex;
+  gap: var(--space-4);
   align-items: center;
-  gap: 0.5rem;
 }
 
-.control-group label {
-  color: var(--text-color);
-  font-weight: 500;
+.control-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 180px;
 }
 
-.canvas-container {
-  position: relative;
-  width: 100%;
-  max-width: 800px;
-  margin-bottom: 1rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+.control-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.canvas-shell {
+  border: 1px solid var(--border-weak);
+  border-radius: var(--radius-md);
   overflow: hidden;
+  background: #ffffff;
 }
 
 canvas {
   display: block;
   width: 100%;
-  height: auto;
-  cursor: crosshair;
   touch-action: none;
+  cursor: crosshair;
 }
 
-button {
-  padding: 0.5rem 1rem;
-  background: var(--bg-color);
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-button:hover {
-  background: var(--primary-color);
-  color: white;
-  border-color: var(--primary-color);
-}
-
-button.active {
-  background: var(--primary-color);
-  color: white;
-  border-color: var(--primary-color);
-}
-
-.save-button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: var(--primary-color);
-  color: white;
-  border: none;
-}
-
-.save-button:hover {
-  background: var(--primary-color-dark);
-}
-
-input[type="color"] {
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-input[type="range"] {
-  width: 100px;
-}
-
-@media (max-width: 768px) {
-  .drawing-board {
-    padding: 1rem;
+@media (max-width: 860px) {
+  .controls-panel {
+    padding: var(--space-4);
   }
-  
+
   .controls {
     flex-direction: column;
+    align-items: stretch;
   }
-  
-  .control-group {
-    width: 100%;
-  }
-  
-  input[type="range"] {
-    flex: 1;
+
+  .control-item {
+    min-width: 100%;
   }
 }
-</style> 
+</style>

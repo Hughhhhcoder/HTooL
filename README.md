@@ -1,6 +1,6 @@
 # HTooL
 
-一个基于 Vue 3 + Vite 的在线工具箱，包含 Markdown、图片、二维码、数学、IP 查询等工具页面。
+一个基于 Vue 3 + Vite 的在线工具箱，采用极简编辑风重构，包含 Markdown、图片、二维码、IP 查询等工具页面。
 
 ## 功能特点
 
@@ -9,9 +9,8 @@
 - 图片格式转换（单个与批量）
 - 二维码生成与解析
 - Markdown ↔ HTML 互转
-- 数学工具（单位换算、公式渲染、统计与行列式）
 - 数据处理（正则、URL、Base64、哈希）
-- IP 地址定位、番茄钟、手绘板
+- IP 地址定位、手绘板
 
 ## 技术栈
 
@@ -43,6 +42,9 @@ npm run test:e2e
 
 # 构建产物性能预算检查
 npm run test:perf-budget
+
+# 设计约束检查（禁用 CSS 渐变）
+npm run test:no-gradient
 
 # 聚合检查（单测 + 构建 + 性能预算）
 npm run check

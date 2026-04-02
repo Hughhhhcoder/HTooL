@@ -1,40 +1,66 @@
 <template>
-  <div class="data-processor">
-    <h2>数据处理工具</h2>
+  <section class="page data-processor-page">
+    <header class="page-header">
+      <div>
+        <p class="page-kicker">System & Data</p>
+        <h1 class="page-title">数据处理工具</h1>
+        <p class="page-subtitle">正则、编码和哈希计算集中在同一工作面板，减少上下切换。</p>
+      </div>
+    </header>
 
-    <div class="section">
-      <h3>正则表达式测试器</h3>
-      <input v-model="regexInput" placeholder="输入正则表达式" />
-      <textarea v-model="textInput" placeholder="输入文本"></textarea>
-      <button @click="testRegex">测试</button>
-      <p v-if="regexResult !== null">匹配结果: {{ regexResult }}</p>
-    </div>
+    <div class="section-grid">
+      <section class="panel section-card">
+        <h2 class="section-title">正则表达式测试器</h2>
+        <p class="section-description">输入表达式与文本后立即返回匹配结果。</p>
+        <div class="stack">
+          <input v-model="regexInput" placeholder="例如：^\d{4}-\d{2}-\d{2}$" />
+          <textarea v-model="textInput" placeholder="输入待测试文本"></textarea>
+          <button class="btn btn-primary" @click="testRegex">执行测试</button>
+          <p v-if="regexResult !== null" class="status">匹配结果：{{ regexResult }}</p>
+        </div>
+      </section>
 
-    <div class="section">
-      <h3>URL 编码 / 解码</h3>
-      <textarea v-model="urlInput" placeholder="输入文本"></textarea>
-      <button @click="encodeUrl">编码</button>
-      <button @click="decodeUrl">解码</button>
-      <p>结果: {{ urlResult }}</p>
-    </div>
+      <section class="panel section-card">
+        <h2 class="section-title">URL 编码 / 解码</h2>
+        <p class="section-description">适合查询参数、路径片段和 URL 安全字符处理。</p>
+        <div class="stack">
+          <textarea v-model="urlInput" placeholder="输入文本"></textarea>
+          <div class="action-row">
+            <button class="btn btn-primary" @click="encodeUrl">编码</button>
+            <button class="btn" @click="decodeUrl">解码</button>
+          </div>
+          <p class="status mono">{{ urlResult || '结果将在这里显示' }}</p>
+        </div>
+      </section>
 
-    <div class="section">
-      <h3>Base64 编码 / 解码</h3>
-      <textarea v-model="base64Input" placeholder="输入文本"></textarea>
-      <button @click="encodeBase64">编码</button>
-      <button @click="decodeBase64">解码</button>
-      <p>结果: {{ base64Result }}</p>
-    </div>
+      <section class="panel section-card">
+        <h2 class="section-title">Base64 编码 / 解码</h2>
+        <p class="section-description">文本 Base64 互转，适合接口调试与数据验证。</p>
+        <div class="stack">
+          <textarea v-model="base64Input" placeholder="输入文本"></textarea>
+          <div class="action-row">
+            <button class="btn btn-primary" @click="encodeBase64">编码</button>
+            <button class="btn" @click="decodeBase64">解码</button>
+          </div>
+          <p class="status mono">{{ base64Result || '结果将在这里显示' }}</p>
+        </div>
+      </section>
 
-    <div class="section">
-      <h3>哈希计算</h3>
-      <textarea v-model="hashInput" placeholder="输入文本"></textarea>
-      <button @click="calculateMD5">计算 MD5</button>
-      <button @click="calculateSHA256">计算 SHA256</button>
-      <p>MD5: {{ md5Result }}</p>
-      <p>SHA256: {{ sha256Result }}</p>
+      <section class="panel section-card">
+        <h2 class="section-title">哈希计算</h2>
+        <p class="section-description">同一输入同时生成 MD5 与 SHA256，便于快速比对。</p>
+        <div class="stack">
+          <textarea v-model="hashInput" placeholder="输入文本"></textarea>
+          <div class="action-row">
+            <button class="btn" @click="calculateMD5">计算 MD5</button>
+            <button class="btn btn-primary" @click="calculateSHA256">计算 SHA256</button>
+          </div>
+          <p class="status mono">MD5：{{ md5Result || '-' }}</p>
+          <p class="status mono">SHA256：{{ sha256Result || '-' }}</p>
+        </div>
+      </section>
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup>
@@ -99,48 +125,41 @@ const calculateSHA256 = () => {
 </script>
 
 <style scoped>
-.data-processor {
-  padding: 20px;
-  max-width: 820px;
-  margin: 0 auto;
+.data-processor-page {
+  display: flex;
+  flex-direction: column;
 }
 
-.section {
-  margin-bottom: 20px;
-  padding: 20px;
-  background: var(--bg-color-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
+.section-grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-input,
-textarea {
-  width: 100%;
-  margin-bottom: 10px;
-  padding: 10px;
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  background: var(--bg-color);
-  color: var(--text-color);
+.section-card {
+  padding: var(--space-6);
 }
 
-textarea {
-  min-height: 90px;
-  resize: vertical;
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
 }
 
-button {
-  margin-right: 10px;
-  margin-bottom: 8px;
-  padding: 10px 16px;
-  background: var(--primary-color);
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+.action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-button:hover {
-  background: var(--primary-color-dark);
+@media (max-width: 980px) {
+  .section-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-card {
+    padding: var(--space-4);
+  }
 }
 </style>
