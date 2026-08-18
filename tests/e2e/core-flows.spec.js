@@ -35,6 +35,14 @@ test('qr code generation flow works', async ({ page }) => {
   await expect(page.locator('.qr-result img')).toBeVisible()
 })
 
+test('markdown html preview removes executable HTML', async ({ page }) => {
+  await page.goto('/markdown-html')
+  await page.locator('textarea').first().fill('<img src=x onerror=alert(1)>')
+  await expect(page.locator('.html-preview')).toBeVisible()
+  await expect(page.locator('.html-preview')).not.toContainText('onerror')
+  await expect(page.locator('.html-preview img')).not.toHaveAttribute('onerror')
+})
+
 test('home supports light and dark visual captures', async ({ page }) => {
   await page.goto('/')
   const lightImage = await page.screenshot({ fullPage: true })
