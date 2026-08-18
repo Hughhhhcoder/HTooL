@@ -1,12 +1,14 @@
-## 变更摘要
+<p align="right">English · <a href="./PULL_REQUEST_TEMPLATE/zh-CN.md">简体中文</a></p>
 
-<!-- 简要说明这次 PR 做了什么，以及为什么需要它。 -->
+## Summary
 
-## 关联 Issue
+<!-- Briefly explain what changed and why it is needed. -->
 
-<!-- 使用 Closes #123 或 Related #123；没有则删除这一行。 -->
+## Related issue
 
-## 验证方式
+<!-- Use Closes #123 or Related #123; remove this line if there is no issue. -->
+
+## Validation
 
 - [ ] `npm run test:unit`
 - [ ] `npm run test:no-gradient`
@@ -14,14 +16,14 @@
 - [ ] `npm run test:perf-budget`
 - [ ] `npm run test:e2e`
 
-## 检查清单
+## Checklist
 
-- [ ] 我已检查浅色和暗色模式。
-- [ ] 我已检查移动端布局。
-- [ ] 我已补充或更新了相关测试。
-- [ ] 我没有提交密钥、个人数据或真实用户文件。
-- [ ] 如果涉及 UI，我已附上截图或录屏。
+- [ ] I checked both light and dark modes.
+- [ ] I checked the mobile layout.
+- [ ] I added or updated relevant tests.
+- [ ] I did not commit secrets, personal data, or real user files.
+- [ ] I included screenshots or a recording for UI changes.
 
-## 兼容性与风险
+## Compatibility and risk
 
-<!-- 说明浏览器兼容性、性能影响、数据边界或破坏性变更。没有则填写“无”。 -->
+<!-- Describe browser compatibility, performance impact, data boundaries, or breaking changes. Write “None” when not applicable. -->

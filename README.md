@@ -1,47 +1,51 @@
 <div align="center">
-  <img src="./public/favicon.svg" width="88" height="88" alt="HTooL 图标" />
+  <img src="./public/favicon.svg" width="88" height="88" alt="HTooL icon" />
   <h1>HTooL</h1>
-  <p>一套浏览器优先的实用工具箱，把常用的小工具收进一个克制、顺手的工作台。</p>
+  <p>A browser-first utility suite that brings everyday tools into one focused, dependable workspace.</p>
   <p>
-    <a href="https://htool.vercel.app/">在线体验</a>
+    <a href="https://htool.vercel.app/">Live demo</a>
     ·
-    <a href="https://github.com/Hughhhhcoder/HTooL/issues/new/choose">报告问题</a>
+    <a href="https://github.com/Hughhhhcoder/HTooL/issues/new/choose">Report an issue</a>
     ·
-    <a href="./CONTRIBUTING.md">参与贡献</a>
+    <a href="./CONTRIBUTING.md">Contribute</a>
   </p>
 </div>
 
 <p align="center">
-  <a href="https://github.com/Hughhhhcoder/HTooL/actions/workflows/ci.yml"><img src="https://github.com/Hughhhhcoder/HTooL/actions/workflows/ci.yml/badge.svg?branch=master" alt="CI 状态" /></a>
-  <a href="https://github.com/Hughhhhcoder/HTooL/issues"><img src="https://img.shields.io/github/issues/Hughhhhcoder/HTooL?color=2f3f63" alt="GitHub Issues" /></a>
-  <a href="https://htool.vercel.app/"><img src="https://img.shields.io/badge/demo-htool.vercel.app-2f3f63" alt="在线演示" /></a>
+  <a href="./README.zh-CN.md">简体中文</a>
 </p>
 
-## 项目定位
+<p align="center">
+  <a href="https://github.com/Hughhhhcoder/HTooL/actions/workflows/ci.yml"><img src="https://github.com/Hughhhhcoder/HTooL/actions/workflows/ci.yml/badge.svg?branch=master" alt="CI status" /></a>
+  <a href="https://github.com/Hughhhhcoder/HTooL/issues"><img src="https://img.shields.io/github/issues/Hughhhhcoder/HTooL?color=2f3f63" alt="GitHub Issues" /></a>
+  <a href="https://htool.vercel.app/"><img src="https://img.shields.io/badge/demo-htool.vercel.app-2f3f63" alt="Live demo" /></a>
+</p>
 
-HTooL 面向写作、开发和日常信息处理场景，优先把数据留在浏览器中完成处理。它不是一个需要账号和后端服务的复杂平台，而是一组打开即用、按任务分组的轻量工具。
+## What is HTooL?
 
-## 工具一览
+HTooL is a small, task-oriented toolkit for writing, development, and everyday data handling. It keeps most work in the browser and avoids turning simple utilities into an account-based platform.
 
-| 分组 | 工具 | 能力 |
+## Tools
+
+| Group | Tool | Capabilities |
 | --- | --- | --- |
-| 文档创作 | Markdown 编辑器 | 编辑、工具栏、实时预览、本地文件夹读写与保存 |
-| 文档创作 | Markdown ↔ HTML | 双向转换、预览、复制与下载 |
-| 图像与编码 | 图片格式转换 | 单个/批量转换、PNG/JPG/WebP/GIF 选择、质量调节 |
-| 图像与编码 | 二维码工具 | 文本/链接生成、尺寸与颜色设置、图片解析、下载 |
-| 图像与编码 | 手绘板 | 画笔、橡皮擦、颜色/粗细调节与 PNG 导出 |
-| 系统与数据 | 数据处理工具 | 正则测试、URL 编码/解码、Base64、MD5 与 SHA-256 |
-| 系统与数据 | IP 地址定位 | 查询 IPv4 的地域、时区与运营商信息 |
+| Writing | Markdown editor | Editing, toolbar actions, live preview, local folder access, and saving |
+| Writing | Markdown ↔ HTML | Two-way conversion, preview, copy, and download |
+| Image & encoding | Image converter | Single/batch conversion, PNG/JPG/WebP/GIF selection, and quality control |
+| Image & encoding | QR code tool | Text/URL generation, size and color settings, image decoding, and download |
+| Image & encoding | Drawing board | Brush, eraser, color/size controls, and PNG export |
+| System & data | Data processor | Regex testing, URL encoding/decoding, Base64, MD5, and SHA-256 |
+| System & data | IP lookup | IPv4 location, timezone, and network information |
 
-## 主要特点
+## Highlights
 
-- 浏览器优先：图片转换、二维码、绘图和文本处理默认在本地完成。
-- 按需加载：Markdown、二维码等较重依赖仅在进入对应工具后加载。
-- 克制的界面：响应式布局、浅色/暗色模式，以及明确的任务分组。
-- 可验证的质量门禁：单元测试、组件测试、E2E 流程、构建体积预算和设计约束检查。
-- 可直接部署：Vercel 配置已包含单页应用路由回退规则。
+- Browser-first: image conversion, QR codes, drawing, and text processing run locally by default.
+- Lazy-loaded tools: heavier Markdown and QR dependencies load only when their tools are opened.
+- Focused interface: responsive layouts, light/dark mode, and clear task groups.
+- Verifiable quality gates: unit/component tests, E2E flows, bundle budgets, and design-constraint checks.
+- Deployment-ready: the Vercel configuration includes the SPA route fallback required by Vue Router.
 
-## 技术栈
+## Tech stack
 
 - [Vue 3](https://vuejs.org/) + [Vue Router](https://router.vuejs.org/)
 - [Vite](https://vite.dev/)
@@ -51,15 +55,15 @@ HTooL 面向写作、开发和日常信息处理场景，优先把数据留在�
 - [DOMPurify](https://github.com/cure53/DOMPurify)
 - [QRCode](https://github.com/soldair/node-qrcode) + [jsQR](https://github.com/cozmo/jsQR)
 
-## 快速开始
+## Quick start
 
-### 环境要求
+### Requirements
 
-- Node.js 20 或更高版本
-- npm 10 或更高版本
-- 需要运行 E2E 测试时，额外安装 Playwright Chromium
+- Node.js 20 or newer
+- npm 10 or newer
+- Playwright Chromium for E2E tests
 
-### 本地开发
+### Run locally
 
 ```bash
 git clone https://github.com/Hughhhhcoder/HTooL.git
@@ -68,92 +72,92 @@ npm ci
 npm run dev
 ```
 
-开发服务器默认地址为 <http://localhost:3000>。
+The development server runs at <http://localhost:3000> by default.
 
-### 构建与预览
+### Build and preview
 
 ```bash
 npm run build
 npm run preview
 ```
 
-### 运行测试
+### Test
 
 ```bash
-# 单元测试与组件测试
+# Unit and component tests
 npm run test:unit
 
-# 设计约束检查：禁止 CSS gradient
+# Design constraint check: CSS gradients are not allowed
 npm run test:no-gradient
 
-# 构建产物性能预算检查
+# Production bundle performance budget
 npm run test:perf-budget
 
-# 首次运行前安装 Playwright 浏览器
+# Install the Playwright browser the first time
 npx playwright install chromium
 
-# E2E 测试
+# End-to-end tests
 npm run test:e2e
 
-# 聚合检查：单测 + 设计约束 + 构建 + 性能预算 + E2E
+# Full verification: tests + constraints + build + budget + E2E
 npm run check
 ```
 
-## 环境变量
+## Environment variables
 
-复制 `.env.example` 为 `.env` 后按需修改：
+Copy `.env.example` to `.env` and adjust as needed:
 
-| 变量 | 默认值 | 说明 |
+| Variable | Default | Description |
 | --- | --- | --- |
-| `VITE_ENABLE_ANALYTICS` | `false` | 设置为 `true` 后，在生产环境注入 Vercel Analytics。 |
+| `VITE_ENABLE_ANALYTICS` | `false` | Set to `true` to inject Vercel Analytics in production. |
 
-## 隐私与数据边界
+## Privacy and data boundaries
 
-- 图片、二维码、绘图、Markdown、编码和哈希处理在浏览器中完成，项目不会因为这些功能主动上传内容到自建服务器。
-- “获取当前 IP”会请求 `api.ipify.org`；IP 归属查询会请求 `ipinfo.io`。这两个请求只在使用 IP 工具时发生。
-- Vercel Analytics 默认关闭，只有显式设置 `VITE_ENABLE_ANALYTICS=true` 才会启用。
-- Markdown 预览和 HTML 预览会经过 DOMPurify 清理；下载 HTML 前仍应审阅内容，尤其不要把不可信内容当作生产页面直接发布。
+- Images, QR codes, drawings, Markdown, encoding, and hash operations run in the browser; HTooL does not upload those inputs to a project-owned server.
+- “Get current IP” calls `api.ipify.org`; IP location lookup calls `ipinfo.io`. These requests happen only when the IP tool is used.
+- Vercel Analytics is disabled by default and is enabled only with `VITE_ENABLE_ANALYTICS=true`.
+- Markdown and HTML previews are sanitized with DOMPurify. Review downloaded HTML before publishing it, especially when the source is untrusted.
 
-## 项目结构
+## Project structure
 
 ```text
 .
-├── public/                  # favicon 等静态资源
-├── scripts/                 # 性能预算与设计约束检查脚本
+├── public/                  # Static assets such as the favicon
+├── scripts/                 # Performance and design-constraint checks
 ├── src/
-│   ├── components/          # 跨页面组件
-│   ├── utils/               # 可复用的转换与校验逻辑
-│   ├── views/               # 工具页面
+│   ├── components/          # Shared Vue components
+│   ├── utils/               # Reusable conversion and validation logic
+│   ├── views/               # Tool pages
 │   ├── App.vue
-│   └── router/              # 路由与按需加载
+│   └── router/              # Routes and lazy loading
 ├── tests/
-│   ├── component/           # Vue 组件测试
-│   ├── e2e/                 # Playwright 端到端流程
-│   └── unit/                # 工具函数与路由测试
-├── .github/                 # CI、Issue/PR 模板与依赖更新配置
-└── vercel.json              # SPA 部署回退配置
+│   ├── component/           # Vue component tests
+│   ├── e2e/                 # Playwright end-to-end flows
+│   └── unit/                # Utility and router tests
+├── .github/                 # CI, bilingual templates, and dependency updates
+└── vercel.json              # SPA deployment fallback
 ```
 
-## 部署
+## Deployment
 
-项目可以直接导入 Vercel：
+HTooL can be imported directly into Vercel:
 
-1. 在 Vercel 中导入本仓库。
-2. Framework Preset 选择 Vite（通常会自动识别）。
-3. Build Command 使用 `npm run build`。
-4. Output Directory 使用 `dist`。
-5. 如果需要统计，再设置 `VITE_ENABLE_ANALYTICS=true`。
+1. Import this repository in Vercel.
+2. Select the Vite framework preset, which is normally detected automatically.
+3. Use `npm run build` as the Build Command.
+4. Use `dist` as the Output Directory.
+5. Set `VITE_ENABLE_ANALYTICS=true` only if analytics are needed.
 
-仓库内的 `vercel.json` 已配置前端路由回退，刷新 `/markdown`、`/qrcode` 等路径时不会被当成静态文件丢失。
+The included `vercel.json` handles SPA route fallback, so refreshing `/markdown`, `/qrcode`, and other client-side routes works as expected.
 
-## 参与贡献
+## Contributing
 
-欢迎提交 Bug 修复、体验改进和新工具。开始之前请阅读 [CONTRIBUTING.md](./CONTRIBUTING.md)，提交 Issue 时尽量提供浏览器、复现步骤和截图。
+Bug fixes, UX improvements, and new tools are welcome. Start with [CONTRIBUTING.md](./CONTRIBUTING.md), and include your browser, reproduction steps, and screenshots when opening an Issue.
 
-- [行为准则](./CODE_OF_CONDUCT.md)
-- [安全策略](./SECURITY.md)
-- [Issue 模板](https://github.com/Hughhhhcoder/HTooL/issues/new/choose)
+- [Code of Conduct](./CODE_OF_CONDUCT.md)
+- [Security Policy](./SECURITY.md)
+- [Issue templates](https://github.com/Hughhhhcoder/HTooL/issues/new/choose)
 
-## 许可证
+## License
 
-当前仓库尚未声明开源许可证。除非仓库后续补充明确的许可证文件，否则代码默认不授予复制、修改或分发权限。
+This repository does not currently declare an open-source license. Unless a license file is added, the code is not granted for copying, modification, or distribution by default.

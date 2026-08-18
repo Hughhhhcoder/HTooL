@@ -1,0 +1,34 @@
+name: 功能建议（中文）
+description: 使用中文提议一个能让 HTooL 更有用的改进
+title: "[Feature][中文]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 要解决的问题
+      description: 请描述场景和当前遇到的限制，而不仅是解决方案。
+      placeholder: 我在……场景下，需要……
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 建议方案
+      description: 你希望工具如何工作？
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 备选方案
+      description: 你尝试过哪些替代做法？
+
+  - type: textarea
+    id: context
+    attributes:
+      label: 补充信息
+      description: 可以附示例、草图、截图或相关链接。

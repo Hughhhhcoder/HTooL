@@ -1,23 +1,25 @@
-# 行为准则
+# Code of Conduct
 
-## 我们的承诺
+<p align="right">English · <a href="./CODE_OF_CONDUCT.zh-CN.md">简体中文</a></p>
 
-为了营造开放、友善且可持续的协作环境，参与 HTooL 的每个人都应以尊重、善意和专业的方式交流，无论其经验、背景或身份如何。
+## Our commitment
 
-## 可接受的行为
+To create an open, friendly, and sustainable collaboration environment, everyone participating in HTooL is expected to communicate with respect, good faith, and professionalism, regardless of experience, background, or identity.
 
-- 使用清晰、建设性的语言提出意见；
-- 讨论实现、体验和证据，而不是评价个人；
-- 接受不同观点，并在有新信息时修正自己的判断；
-- 尊重项目维护者和其他贡献者的时间。
+## Acceptable behavior
 
-## 不可接受的行为
+- Use clear and constructive language.
+- Discuss implementation, experience, and evidence rather than judging people.
+- Stay open to different perspectives and update your view when new information appears.
+- Respect the time of maintainers and contributors.
 
-- 骚扰、歧视、威胁、人身攻击或故意羞辱；
-- 发布他人的私人信息；
-- 破坏讨论、刷屏、冒充他人或以恶意方式提交内容；
-- 任何不适合公开协作环境的行为。
+## Unacceptable behavior
 
-## 执行
+- Harassment, discrimination, threats, personal attacks, or deliberate humiliation.
+- Publishing someone else’s private information.
+- Disrupting discussions, spamming, impersonating others, or submitting content maliciously.
+- Any other behavior that is inappropriate for a public collaboration space.
 
-请通过 [维护者主页](https://github.com/Hughhhhcoder) 私下联系维护者，报告违反本准则的行为。维护者会根据事实采取适当措施，并尽可能保护报告者的隐私。
+## Enforcement
+
+Please contact the maintainer privately through the [maintainer profile](https://github.com/Hughhhhcoder) to report a violation. Reports will be reviewed based on the available facts, with the reporter’s privacy protected as far as possible.
