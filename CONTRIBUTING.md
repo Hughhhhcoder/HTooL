@@ -1,31 +1,33 @@
-# 贡献指南
+# Contributing
 
-感谢你愿意改进 HTooL。小而明确的 Pull Request 更容易被审阅，也更容易保持这个工具箱的稳定和克制。
+<p align="right">English · <a href="./CONTRIBUTING.zh-CN.md">简体中文</a></p>
 
-## 开始之前
+Thanks for helping improve HTooL. Small, focused Pull Requests are easier to review and help keep the toolkit stable and deliberate.
 
-1. 确认 Node.js 版本为 20 或更高版本。
-2. 安装依赖：`npm ci`。
-3. 启动开发环境：`npm run dev`。
-4. 对行为变更先搜索现有 Issue，避免重复工作。
+## Before you start
 
-## 开发约定
+1. Use Node.js 20 or newer.
+2. Install dependencies with `npm ci`.
+3. Start the development environment with `npm run dev`.
+4. Search existing Issues before starting behavioral changes so work is not duplicated.
 
-- 页面放在 `src/views/`，跨页面组件放在 `src/components/`，纯逻辑放在 `src/utils/`。
-- 新增功能时同步补充单元/组件测试；涉及用户流程时补充 E2E 测试。
-- 保持工具页面响应式，并同时检查浅色和暗色模式。
-- 项目当前有两个设计门禁：不要在 `src/` 中使用 CSS gradient，并确保构建产物不超过性能预算。
-- 不要把密钥、个人数据或真实用户文件提交到仓库。
+## Development conventions
 
-## 分支与提交
+- Put pages in `src/views/`, shared components in `src/components/`, and reusable logic in `src/utils/`.
+- Add unit/component tests for new behavior and E2E coverage for user-facing flows.
+- Keep tool pages responsive and check both light and dark modes.
+- Respect the two current design gates: do not use CSS gradients in `src/`, and keep the production bundle within its performance budget.
+- Never commit secrets, personal data, or real user files.
 
-从 `master` 创建分支，例如：
+## Branches and commits
+
+Create a branch from `master`, for example:
 
 ```bash
 git switch -c feat/your-change
 ```
 
-提交信息建议使用简短的 Conventional Commits 风格前缀：
+Commit messages should use a short Conventional Commits-style prefix:
 
 ```text
 feat: add a new utility
@@ -35,19 +37,19 @@ refactor: simplify converter state
 test: cover keyboard shortcut
 ```
 
-## 提交 Pull Request
+## Opening a Pull Request
 
-提交前至少运行：
+Run the full verification suite before submitting:
 
 ```bash
 npm run check
 ```
 
-如果本地没有 Playwright 浏览器，先运行 `npx playwright install chromium`。PR 描述请说明：
+If Playwright browsers are not installed, run `npx playwright install chromium` first. A PR description should explain:
 
-- 做了什么，以及为什么做；
-- 如何验证；
-- 是否有 UI 变化（有的话附截图或录屏）；
-- 是否存在兼容性、性能或破坏性变更。
+- what changed and why;
+- how it was verified;
+- whether the UI changed, with screenshots or a recording when useful;
+- any compatibility, performance, or breaking changes.
 
-PR 会经过 CI 检查。维护者可能会要求拆分范围、补测试或调整交互细节。
+Every PR runs through CI. Maintainers may ask for a narrower scope, additional tests, or interaction refinements.

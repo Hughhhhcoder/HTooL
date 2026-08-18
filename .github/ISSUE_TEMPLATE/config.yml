@@ -1,8 +1,11 @@
 blank_issues_enabled: true
 contact_links:
-  - name: 在线体验
+  - name: Live demo
     url: https://htool.vercel.app/
-    about: 先在最新线上版本确认问题是否可以复现。
-  - name: 使用文档
-    url: https://github.com/Hughhhhcoder/HTooL#快速开始
+    about: Confirm whether the problem reproduces on the latest live version.
+  - name: English documentation
+    url: https://github.com/Hughhhhcoder/HTooL#quick-start
+    about: Read setup, testing, deployment, and privacy guidance.
+  - name: 简体中文文档
+    url: https://github.com/Hughhhhcoder/HTooL/blob/master/README.zh-CN.md#快速开始
     about: 查看安装、测试、部署和隐私说明。

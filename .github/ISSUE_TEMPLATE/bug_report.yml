@@ -1,5 +1,5 @@
-name: Bug 报告
-description: 报告一个可以稳定复现的问题
+name: Bug report
+description: Report a reproducible problem
 title: "[Bug]: "
 labels:
   - bug
@@ -7,52 +7,52 @@ body:
   - type: markdown
     attributes:
       value: |
-        感谢反馈！提交前请先确认问题能在最新线上版本或 `master` 分支复现。
+        Thanks for the report. Please confirm that the problem reproduces on the latest live version or the `master` branch.
 
   - type: input
     id: browser
     attributes:
-      label: 浏览器与版本
-      placeholder: 例如 Chrome 128 / Safari 18
+      label: Browser and version
+      placeholder: e.g. Chrome 128 / Safari 18
     validations:
       required: true
 
   - type: input
     id: tool
     attributes:
-      label: 受影响的工具或页面
-      placeholder: 例如 Markdown 编辑器、二维码工具
+      label: Affected tool or page
+      placeholder: e.g. Markdown editor, QR code tool
     validations:
       required: true
 
   - type: textarea
     id: steps
     attributes:
-      label: 复现步骤
-      description: 请按顺序写出最小复现路径。
+      label: Steps to reproduce
+      description: List the smallest reproducible path in order.
       placeholder: |
-        1. 打开……
-        2. 输入……
-        3. 点击……
+        1. Open …
+        2. Enter …
+        3. Click …
     validations:
       required: true
 
   - type: textarea
     id: expected
     attributes:
-      label: 预期行为
+      label: Expected behavior
     validations:
       required: true
 
   - type: textarea
     id: actual
     attributes:
-      label: 实际行为
+      label: Actual behavior
     validations:
       required: true
 
   - type: textarea
     id: context
     attributes:
-      label: 补充信息
-      description: 可以附截图、控制台错误、操作系统或其他上下文。请先移除敏感数据。
+      label: Additional context
+      description: Add screenshots, console errors, operating-system details, or other context. Remove sensitive data first.

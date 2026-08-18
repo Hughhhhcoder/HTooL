@@ -1,21 +1,23 @@
-# 安全策略
+# Security Policy
 
-## 支持范围
+<p align="right">English · <a href="./SECURITY.zh-CN.md">简体中文</a></p>
 
-目前项目没有正式发布版本，默认仅维护 `master` 分支上的最新代码。
+## Supported scope
 
-| 版本/分支 | 支持情况 |
+HTooL does not have formal releases yet. Security reports are handled against the latest code on the `master` branch.
+
+| Version/branch | Support |
 | --- | --- |
-| `master` | ✅ 接受安全问题报告 |
-| 其他旧提交 | ❌ 不提供修复承诺 |
+| `master` | ✅ Security reports accepted |
+| Older commits | ❌ No fix commitment |
 
-## 报告漏洞
+## Reporting a vulnerability
 
-请不要在公开 Issue 中发布可被利用的漏洞、攻击脚本或敏感数据。请通过 [维护者主页](https://github.com/Hughhhhcoder) 的公开联系方式私下报告，并尽量附上：
+Do not publish exploitable vulnerabilities, attack scripts, or sensitive data in a public Issue. Please contact the maintainer privately through the [maintainer profile](https://github.com/Hughhhhcoder) and include, when possible:
 
-- 影响范围和复现步骤；
-- 浏览器、操作系统和项目版本；
-- 最小化的复现样例；
-- 你认为合理的修复建议（如果有）。
+- impact and reproduction steps;
+- browser, operating system, and project version;
+- a minimal reproduction case;
+- a suggested fix, if you have one.
 
-收到报告后，维护者会先确认问题，再评估影响范围、修复方式和公开时间。
+The maintainer will acknowledge the report, assess its impact, and coordinate the fix and disclosure timing.
