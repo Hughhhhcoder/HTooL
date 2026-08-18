@@ -85,6 +85,7 @@ const previewMode = ref('HTML')
 
 let markedLib = null
 let turndownService = null
+let dompurifyLib = null
 
 const ensureMarked = async () => {
   if (markedLib) return markedLib
@@ -109,10 +110,19 @@ const ensureTurndown = async () => {
   return turndownService
 }
 
+const ensureDomPurify = async () => {
+  if (dompurifyLib) return dompurifyLib
+  const dompurifyModule = await import('dompurify')
+  dompurifyLib = dompurifyModule.default
+  return dompurifyLib
+}
+
 const convertToHtml = async () => {
   try {
     const marked = await ensureMarked()
-    htmlOutput.value = marked(markdownInput.value, markedRenderOptions)
+    const DOMPurify = await ensureDomPurify()
+    const html = marked(markdownInput.value, markedRenderOptions)
+    htmlOutput.value = DOMPurify.sanitize(html)
   } catch (error) {
     console.error('Markdown 转换错误:', error)
     htmlOutput.value = '<div class="preview-error">转换出错，请检查输入内容</div>'
