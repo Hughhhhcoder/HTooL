@@ -37,6 +37,20 @@ HTooL 面向写作、开发和日常信息处理场景，优先把数据留在�
 | 系统与数据 | 数据处理工具 | 正则测试、URL 编码/解码、Base64、MD5 与 SHA-256 |
 | 系统与数据 | IP 地址定位 | 查询 IPv4 的地域、时区与运营商信息 |
 
+## 工具路由
+
+每个工具都有独立的前端路由，可以直接收藏或分享某个具体工作流：
+
+| 路由 | 工具 |
+| --- | --- |
+| `/markdown` | Markdown 编辑器 |
+| `/markdown-html` | Markdown ↔ HTML 转换器 |
+| `/image-converter` | 图片转换器 |
+| `/qrcode` | 二维码生成与解析 |
+| `/drawing-board` | 手绘板 |
+| `/data-processor` | 正则、编码与哈希工具 |
+| `/ip-location` | IP 地址定位 |
+
 ## 主要特点
 
 - 浏览器优先：图片转换、二维码、绘图和文本处理默认在本地完成。
@@ -117,6 +131,8 @@ npm run check
 - “获取当前 IP”会请求 `api.ipify.org`；IP 归属查询会请求 `ipinfo.io`。这两个请求只在使用 IP 工具时发生。
 - Vercel Analytics 默认关闭，只有显式设置 `VITE_ENABLE_ANALYTICS=true` 才会启用。
 - Markdown 预览和 HTML 预览会经过 DOMPurify 清理；下载 HTML 前仍应审阅内容，尤其不要把不可信内容当作生产页面直接发布。
+
+Markdown 编辑器的本地文件夹功能使用浏览器 File System Access API，需要用户显式授权。不同浏览器的支持程度不同；不授予文件夹权限也不影响其他工具使用。
 
 ## 项目结构
 

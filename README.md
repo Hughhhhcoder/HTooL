@@ -37,6 +37,20 @@ HTooL is a small, task-oriented toolkit for writing, development, and everyday d
 | System & data | Data processor | Regex testing, URL encoding/decoding, Base64, MD5, and SHA-256 |
 | System & data | IP lookup | IPv4 location, timezone, and network information |
 
+## Tool routes
+
+Each tool is available directly through a client-side route, which makes it easy to bookmark or deep-link a workflow:
+
+| Route | Tool |
+| --- | --- |
+| `/markdown` | Markdown editor |
+| `/markdown-html` | Markdown ↔ HTML converter |
+| `/image-converter` | Image converter |
+| `/qrcode` | QR code generator and decoder |
+| `/drawing-board` | Drawing board |
+| `/data-processor` | Regex, encoding, and hashing utilities |
+| `/ip-location` | IP location lookup |
+
 ## Highlights
 
 - Browser-first: image conversion, QR codes, drawing, and text processing run locally by default.
@@ -117,6 +131,8 @@ Copy `.env.example` to `.env` and adjust as needed:
 - “Get current IP” calls `api.ipify.org`; IP location lookup calls `ipinfo.io`. These requests happen only when the IP tool is used.
 - Vercel Analytics is disabled by default and is enabled only with `VITE_ENABLE_ANALYTICS=true`.
 - Markdown and HTML previews are sanitized with DOMPurify. Review downloaded HTML before publishing it, especially when the source is untrusted.
+
+The Markdown editor's local folder workflow uses the browser File System Access API and requires an explicit user permission. Support varies by browser; the rest of the toolbox remains useful without granting folder access.
 
 ## Project structure
 
